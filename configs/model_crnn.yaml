@@ -1,0 +1,17 @@
+# CRNN baseline training config (Phase 1). Colab/Kaggle can raise epochs/epoch_size.
+model: crnn
+epochs: 30
+batch_size: 16
+epoch_size: 512          # synthesized scenes per epoch
+scene_seconds: 10.0
+lr: 0.001
+label_pool: 4            # conv stack time downsampling (25 fps posteriors)
+val_scenes: 48
+num_workers: 0
+weights_out: "weights/crnn_baseline.pt"
+
+synth:
+  snr_db_range: [-5.0, 20.0]
+  snr_skew_low: true
+  engine_bed_prob: 0.6
+  procedural_class4_prob: 0.5

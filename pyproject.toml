@@ -13,6 +13,7 @@ dependencies = [
     "torch>=2.2",
     "torchaudio>=2.2",
     "librosa>=0.10.2",
+    "scipy>=1.10",
     "soundfile>=0.12.1",
     "soxr>=0.3.7",
     "omegaconf>=2.3.0",
