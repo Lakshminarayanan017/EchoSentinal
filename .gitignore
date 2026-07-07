@@ -1,0 +1,33 @@
+# Data and heavy artifacts — never commit audio or model binaries
+/Dataset/
+/data/
+*.wav
+*.mp3
+*.flac
+weights/*.pt
+weights/*.pth
+weights/*.ckpt
+weights/*.pkl
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Notebooks / IDE / OS
+.ipynb_checkpoints/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Experiment outputs
+runs/
+out/
+lightning_logs/
+wandb/

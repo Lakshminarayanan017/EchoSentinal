@@ -1,0 +1,198 @@
+path,class_id,class_name,sr,channels,duration_s,source_group
+Cargo dataset\103.wav,1,vessel,32000,1,199.0,Cargo dataset:103
+Cargo dataset\110.wav,1,vessel,32000,1,202.0,Cargo dataset:110
+Cargo dataset\15.wav,1,vessel,32000,1,187.0,Cargo dataset:15
+Cargo dataset\27.wav,1,vessel,32000,1,196.0,Cargo dataset:27
+Cargo dataset\38.wav,1,vessel,32000,1,196.0,Cargo dataset:38
+Cargo dataset\41.wav,1,vessel,32000,1,183.0,Cargo dataset:41
+Cargo dataset\44.wav,1,vessel,32000,1,200.0,Cargo dataset:44
+Cargo dataset\62.wav,1,vessel,32000,1,198.0,Cargo dataset:62
+Cargo dataset\69.wav,1,vessel,32000,1,184.0,Cargo dataset:69
+Cargo dataset\78.wav,1,vessel,32000,1,194.0,Cargo dataset:78
+Cargo dataset\96.wav,1,vessel,32000,1,199.0,Cargo dataset:96
+Cargo dataset\99.wav,1,vessel,32000,1,186.0,Cargo dataset:99
+Tanker ds\10.wav,1,vessel,32000,1,30.0,Tanker ds:10
+Tanker ds\12.wav,1,vessel,32000,1,33.0,Tanker ds:12
+Tanker ds\13.wav,1,vessel,32000,1,157.0,Tanker ds:13
+Tanker ds\14.wav,1,vessel,32000,1,25.0,Tanker ds:14
+Tanker ds\18.wav,1,vessel,32000,1,66.0,Tanker ds:18
+Tanker ds\19.wav,1,vessel,32000,1,14.0,Tanker ds:19
+Tanker ds\2.wav,1,vessel,32000,1,150.0,Tanker ds:2
+Tanker ds\20.wav,1,vessel,32000,1,104.0,Tanker ds:20
+Tanker ds\21.wav,1,vessel,32000,1,16.0,Tanker ds:21
+Tanker ds\24.wav,1,vessel,32000,1,21.0,Tanker ds:24
+Tanker ds\29.wav,1,vessel,32000,1,109.0,Tanker ds:29
+Tanker ds\30.wav,1,vessel,32000,1,33.0,Tanker ds:30
+Tanker ds\32.wav,1,vessel,32000,1,38.0,Tanker ds:32
+Tanker ds\33.wav,1,vessel,32000,1,16.0,Tanker ds:33
+Tanker ds\35.wav,1,vessel,32000,1,16.0,Tanker ds:35
+Tanker ds\38.wav,1,vessel,32000,1,174.0,Tanker ds:38
+Tanker ds\39.wav,1,vessel,32000,1,129.0,Tanker ds:39
+Tanker ds\41.wav,1,vessel,32000,1,44.0,Tanker ds:41
+Tanker ds\42.wav,1,vessel,32000,1,70.0,Tanker ds:42
+Tanker ds\43.wav,1,vessel,32000,1,28.0,Tanker ds:43
+Tanker ds\47.wav,1,vessel,32000,1,21.0,Tanker ds:47
+Tanker ds\48.wav,1,vessel,32000,1,37.0,Tanker ds:48
+Tanker ds\49.wav,1,vessel,32000,1,38.0,Tanker ds:49
+Tanker ds\5.wav,1,vessel,32000,1,47.0,Tanker ds:5
+Tanker ds\50.wav,1,vessel,32000,1,10.0,Tanker ds:50
+Tanker ds\6.wav,1,vessel,32000,1,172.0,Tanker ds:6
+Tanker ds\8.wav,1,vessel,32000,1,44.0,Tanker ds:8
+Tanker ds\9.wav,1,vessel,32000,1,18.0,Tanker ds:9
+Tug ds\40.wav,1,vessel,32000,1,200.0,Tug ds:40
+Tug ds\49.wav,1,vessel,32000,1,190.0,Tug ds:49
+Tug ds\9.wav,1,vessel,32000,1,203.0,Tug ds:9
+other_anthropogenic\Vess-05-large-vessel-clip.mp3,1,vessel,11025,1,300.0,other_anthropogenic:Vess-05-large-vessel-clip
+other_anthropogenic\Vess-GRNMS-NOAA-PAGroup-08-vessel-clip.mp3,1,vessel,48000,1,5.0,other_anthropogenic:Vess-GRNMS-NOAA-PAGroup-08-vessel-clip
+passengership ds\1.wav,1,vessel,32000,1,37.0,passengership ds:1
+passengership ds\12.wav,1,vessel,32000,1,18.0,passengership ds:12
+passengership ds\14.wav,1,vessel,32000,1,48.0,passengership ds:14
+passengership ds\16.wav,1,vessel,32000,1,11.0,passengership ds:16
+passengership ds\17.wav,1,vessel,32000,1,26.0,passengership ds:17
+passengership ds\23.wav,1,vessel,32000,1,130.0,passengership ds:23
+passengership ds\27 (1).wav,1,vessel,32000,1,33.0,passengership ds:27 (1)
+passengership ds\29.wav,1,vessel,32000,1,36.0,passengership ds:29
+passengership ds\30.wav,1,vessel,32000,1,6.0,passengership ds:30
+passengership ds\31.wav,1,vessel,32000,1,16.0,passengership ds:31
+passengership ds\32.wav,1,vessel,32000,1,54.0,passengership ds:32
+passengership ds\33.wav,1,vessel,32000,1,112.0,passengership ds:33
+passengership ds\37.wav,1,vessel,32000,1,162.0,passengership ds:37
+passengership ds\4.wav,1,vessel,32000,1,204.0,passengership ds:4
+passengership ds\41 (1).wav,1,vessel,32000,1,23.0,passengership ds:41 (1)
+passengership ds\5.wav,1,vessel,32000,1,14.0,passengership ds:5
+passengership ds\50.wav,1,vessel,32000,1,163.0,passengership ds:50
+passengership ds\6.wav,1,vessel,32000,1,30.0,passengership ds:6
+passengership ds\8.wav,1,vessel,32000,1,12.0,passengership ds:8
+passengership ds\9.wav,1,vessel,32000,1,11.0,passengership ds:9
+Marine Animals\343682__mbari_mars__blue-whale-b-call-5x.wav,2,marine_animal,48000,1,42.24,freesound:mbari_mars
+Marine Animals\403844__mbari_mars__blue-whale-a-and-b-calls-audible-only-with-appropriate-speakers.wav,2,marine_animal,48000,2,51.2,freesound:mbari_mars
+Marine Animals\404313__mbari_mars__pacific-white-sided-dolphins.wav,2,marine_animal,32000,1,33.14,freesound:mbari_mars
+Marine Animals\404314__mbari_mars__marine-mammal-community (1).wav,2,marine_animal,48000,1,7.56,freesound:mbari_mars
+Marine Animals\404315__mbari_mars__beaked-whale-clicks (1).wav,2,marine_animal,48000,1,16.35,freesound:mbari_mars
+Marine Animals\404318__mbari_mars__cachalot-sperm-whale.wav,2,marine_animal,48000,1,50.35,freesound:mbari_mars
+Marine Animals\413377__mbari_mars__gray-whale.wav,2,marine_animal,1000,1,31.32,freesound:mbari_mars
+Marine Animals\6102100Q.wav,2,marine_animal,81920,1,0.85,Marine Animals:6102100Q
+Marine Animals\6102100T.wav,2,marine_animal,81920,1,0.54,Marine Animals:6102100T
+Marine Animals\6102300R.wav,2,marine_animal,81920,1,0.74,Marine Animals:6102300R
+Marine Animals\61023018.wav,2,marine_animal,81920,1,1.06,Marine Animals:61023018
+Marine Animals\6102301I.wav,2,marine_animal,30000,1,2.75,Marine Animals:6102301I
+Marine Animals\61025001.wav,2,marine_animal,43900,1,3.53,Marine Animals:61025001
+Marine Animals\61025002.wav,2,marine_animal,43900,1,3.53,Marine Animals:61025002
+Marine Animals\61025003.wav,2,marine_animal,43900,1,3.53,Marine Animals:61025003
+Marine Animals\61025004.wav,2,marine_animal,43900,1,1.76,Marine Animals:61025004
+Marine Animals\61025006.wav,2,marine_animal,43900,1,1.76,Marine Animals:61025006
+Marine Animals\61025007.wav,2,marine_animal,43900,1,1.76,Marine Animals:61025007
+Marine Animals\61025008.wav,2,marine_animal,43900,1,3.53,Marine Animals:61025008
+Marine Animals\61025009.wav,2,marine_animal,43900,1,2.65,Marine Animals:61025009
+Marine Animals\6102500A.wav,2,marine_animal,43900,1,3.53,Marine Animals:6102500A
+Marine Animals\6102500B.wav,2,marine_animal,60600,1,1.22,Marine Animals:6102500B
+Marine Animals\79002004.wav,2,marine_animal,5120,1,1.42,Marine Animals:79002004
+Marine Animals\79002007.wav,2,marine_animal,5120,1,1.42,Marine Animals:79002007
+Marine Animals\7900200K.wav,2,marine_animal,5120,1,1.42,Marine Animals:7900200K
+Marine Animals\7900200L.wav,2,marine_animal,5120,1,1.42,Marine Animals:7900200L
+Marine Animals\7900200Q.wav,2,marine_animal,5120,1,2.77,Marine Animals:7900200Q
+Marine Animals\7900200R.wav,2,marine_animal,5120,1,1.91,Marine Animals:7900200R
+Marine Animals\7900200S.wav,2,marine_animal,5120,1,1.85,Marine Animals:7900200S
+Marine Animals\7900200T.wav,2,marine_animal,5120,1,3.95,Marine Animals:7900200T
+Marine Animals\7900200Y.wav,2,marine_animal,5120,1,1.82,Marine Animals:7900200Y
+Marine Animals\79002010.wav,2,marine_animal,5120,1,1.76,Marine Animals:79002010
+Marine Animals\79002012.wav,2,marine_animal,5120,1,1.76,Marine Animals:79002012
+Marine Animals\83002002.wav,2,marine_animal,5120,1,1.42,Marine Animals:83002002
+Marine Animals\8300200A.wav,2,marine_animal,5120,1,2.06,Marine Animals:8300200A
+Marine Animals\8300200B.wav,2,marine_animal,5120,1,1.41,Marine Animals:8300200B
+Marine Animals\8300200C.wav,2,marine_animal,5120,1,2.31,Marine Animals:8300200C
+Marine Animals\95003008.wav,2,marine_animal,80000,1,2.25,Marine Animals:95003008
+Marine Animals\95003009.wav,2,marine_animal,80000,1,1.62,Marine Animals:95003009
+other_anthropogenic\20210205-sanctsound-ci01-01-snappingshrimp-20181101t080448.wav,2,marine_animal,32000,1,6.09,other_anthropogenic:20210205-sanctsound-ci01-01-snappingshrimp-20181101t080448
+other_anthropogenic\20210205-sanctsound-ci01-03-dolphins-20190904t064203z.wav,2,marine_animal,48000,1,60.0,other_anthropogenic:20210205-sanctsound-ci01-03-dolphins-20190904t064203z
+other_anthropogenic\20210205-sanctsound-hi01-01-hwsong-20190216t045823z.wav,2,marine_animal,44100,1,60.94,other_anthropogenic:20210205-sanctsound-hi01-01-hwsong-20190216t045823z
+Human made Objects\148002__loafdv__large-earthquake.wav,3,natural_sound,44100,2,23.95,freesound:loafdv
+Human made Objects\165998__vflefevre__rain-gutter-spb-041.wav,3,natural_sound,96000,2,61.34,freesound:vflefevre
+Human made Objects\19994__marec__tremor.wav,3,natural_sound,44100,2,46.55,freesound:marec
+Human made Objects\217235__roofusj__rain-01.wav,3,natural_sound,96000,2,179.04,freesound:roofusj
+Human made Objects\248343__ryanconway__earthquake.wav,3,natural_sound,44100,2,24.28,freesound:ryanconway
+Human made Objects\316895__alexkandrell__heavy_rain_thunder_uk_cambridge_short.wav,3,natural_sound,48000,2,11.18,freesound:alexkandrell
+Human made Objects\401275__inspectorj__rain-moderate-c.wav,3,natural_sound,44100,2,60.12,freesound:inspectorj
+Human made Objects\423120__ogsoundfx__earthquake-1-big.wav,3,natural_sound,48000,2,46.0,freesound:ogsoundfx
+Human made Objects\49646__phantaglyph__wes-earthquake-4-16-95.wav,3,natural_sound,44100,1,42.95,freesound:phantaglyph
+Human made Objects\50056__vibe_crc__rain_session_10sec_2007.wav,3,natural_sound,44100,1,10.2,freesound:vibe_crc
+Human made Objects\50060__vibe_crc__rain_session_27sec_2006.wav,3,natural_sound,44100,1,27.79,freesound:vibe_crc
+Human made Objects\514381__zatar__earthquake3.wav,3,natural_sound,44100,2,65.96,freesound:zatar
+Human made Objects\547927__greysound__cooperstown-log-cabin-in-rain-excerpt-1-rx.wav,3,natural_sound,48000,2,72.69,freesound:greysound
+Human made Objects\669487__xkeril__rain-on-roofs.wav,3,natural_sound,48000,2,54.48,freesound:xkeril
+Human made Objects\680510__audiodaprati__earthquake-2023.wav,3,natural_sound,48000,2,32.23,freesound:audiodaprati
+Human made Objects\719550__betostado99__geophone-test.wav,3,natural_sound,48000,2,12.2,freesound:betostado99
+Human made Objects\719551__betostado99__earthquake-rumble.wav,3,natural_sound,48000,2,14.59,freesound:betostado99
+Human made Objects\727279__logicmoon__earthquake.wav,3,natural_sound,44100,2,93.0,freesound:logicmoon
+Human made Objects\729214__techspiredminds__stonefall3.wav,3,natural_sound,44100,1,1.24,freesound:techspiredminds
+Human made Objects\768871__gustavo_c__raining_inside.wav,3,natural_sound,44100,1,26.5,freesound:gustavo_c
+Human made Objects\818836__wavewire__lofi_rocksgrinding_reverberated-01.wav,3,natural_sound,44100,2,5.38,freesound:wavewire
+Human made Objects\rain1.wav,3,natural_sound,96000,2,29.0,Human made Objects:rain1
+Human made Objects\rain2.wav,3,natural_sound,96000,2,35.03,Human made Objects:rain2
+Human made Objects\rain3.wav,3,natural_sound,52734,1,120.0,Human made Objects:rain3
+Human made Objects\rain4.wav,3,natural_sound,44100,2,126.96,Human made Objects:rain4
+Human made Objects\volcano1.mp3,3,natural_sound,48000,2,277.04,Human made Objects:volcano1
+Human made Objects\volcano2.mp3,3,natural_sound,48000,2,10.35,Human made Objects:volcano2
+Marine Animals\369485__mbari_mars__earthquake-audible-only-with-appropriate-speakers.wav,3,natural_sound,48000,1,20.33,freesound:mbari_mars
+Natural Sounds\1.wav,3,natural_sound,32000,1,37.0,Natural Sounds:1
+Natural Sounds\10.wav,3,natural_sound,32000,1,30.0,Natural Sounds:10
+Natural Sounds\103.wav,3,natural_sound,32000,1,199.0,Natural Sounds:103
+Natural Sounds\110.wav,3,natural_sound,32000,1,202.0,Natural Sounds:110
+Natural Sounds\12.wav,3,natural_sound,32000,1,33.0,Natural Sounds:12
+Natural Sounds\13.wav,3,natural_sound,32000,1,157.0,Natural Sounds:13
+Natural Sounds\14.wav,3,natural_sound,32000,1,25.0,Natural Sounds:14
+Natural Sounds\15.wav,3,natural_sound,32000,1,187.0,Natural Sounds:15
+Natural Sounds\16.wav,3,natural_sound,32000,1,11.0,Natural Sounds:16
+Natural Sounds\17.wav,3,natural_sound,32000,1,26.0,Natural Sounds:17
+Natural Sounds\18.wav,3,natural_sound,32000,1,66.0,Natural Sounds:18
+Natural Sounds\19.wav,3,natural_sound,32000,1,14.0,Natural Sounds:19
+Natural Sounds\2.wav,3,natural_sound,32000,1,150.0,Natural Sounds:2
+Natural Sounds\20.wav,3,natural_sound,32000,1,104.0,Natural Sounds:20
+Natural Sounds\21.wav,3,natural_sound,32000,1,16.0,Natural Sounds:21
+Natural Sounds\23.wav,3,natural_sound,32000,1,130.0,Natural Sounds:23
+Natural Sounds\24.wav,3,natural_sound,32000,1,21.0,Natural Sounds:24
+Natural Sounds\27.wav,3,natural_sound,32000,1,196.0,Natural Sounds:27
+Natural Sounds\29.wav,3,natural_sound,32000,1,109.0,Natural Sounds:29
+Natural Sounds\30.wav,3,natural_sound,32000,1,33.0,Natural Sounds:30
+Natural Sounds\31.wav,3,natural_sound,32000,1,16.0,Natural Sounds:31
+Natural Sounds\32.wav,3,natural_sound,32000,1,38.0,Natural Sounds:32
+Natural Sounds\33.wav,3,natural_sound,32000,1,16.0,Natural Sounds:33
+Natural Sounds\35.wav,3,natural_sound,32000,1,16.0,Natural Sounds:35
+Natural Sounds\37.wav,3,natural_sound,32000,1,162.0,Natural Sounds:37
+Natural Sounds\38.wav,3,natural_sound,32000,1,174.0,Natural Sounds:38
+Natural Sounds\39.wav,3,natural_sound,32000,1,129.0,Natural Sounds:39
+Natural Sounds\4.wav,3,natural_sound,32000,1,204.0,Natural Sounds:4
+Natural Sounds\40.wav,3,natural_sound,32000,1,200.0,Natural Sounds:40
+Natural Sounds\41.wav,3,natural_sound,32000,1,44.0,Natural Sounds:41
+Natural Sounds\42.wav,3,natural_sound,32000,1,70.0,Natural Sounds:42
+Natural Sounds\43.wav,3,natural_sound,32000,1,28.0,Natural Sounds:43
+Natural Sounds\44.wav,3,natural_sound,32000,1,200.0,Natural Sounds:44
+Natural Sounds\47.wav,3,natural_sound,32000,1,21.0,Natural Sounds:47
+Natural Sounds\48.wav,3,natural_sound,32000,1,37.0,Natural Sounds:48
+Natural Sounds\49.wav,3,natural_sound,32000,1,38.0,Natural Sounds:49
+Natural Sounds\5.wav,3,natural_sound,32000,1,47.0,Natural Sounds:5
+Natural Sounds\50.wav,3,natural_sound,32000,1,10.0,Natural Sounds:50
+Natural Sounds\6.wav,3,natural_sound,32000,1,172.0,Natural Sounds:6
+Natural Sounds\62.wav,3,natural_sound,32000,1,198.0,Natural Sounds:62
+Natural Sounds\69.wav,3,natural_sound,32000,1,184.0,Natural Sounds:69
+Natural Sounds\78.wav,3,natural_sound,32000,1,194.0,Natural Sounds:78
+Natural Sounds\8.wav,3,natural_sound,32000,1,44.0,Natural Sounds:8
+Natural Sounds\9.wav,3,natural_sound,32000,1,18.0,Natural Sounds:9
+Natural Sounds\96.wav,3,natural_sound,32000,1,199.0,Natural Sounds:96
+Natural Sounds\99.wav,3,natural_sound,32000,1,186.0,Natural Sounds:99
+Natural Sounds\Ice-Calving-AWI-Van-Opzeeland-03-ice-calving-clip.mp3,3,natural_sound,32000,1,25.94,Natural Sounds:Ice-Calving-AWI-Van-Opzeeland-03-ice-calving-clip
+Natural Sounds\Ice-singing-AWI-Van-Opzeeland-02-ice-singing-clip.mp3,3,natural_sound,8000,1,29.38,Natural Sounds:Ice-singing-AWI-Van-Opzeeland-02-ice-singing-clip
+Natural Sounds\Quake-NOAA-Kline-01-amplified-LPfilter200-earthquake-clip.mp3,3,natural_sound,8000,1,83.11,Natural Sounds:Quake-NOAA-Kline-01-amplified-LPfilter200-earthquake-clip
+Natural Sounds\Quiet-AWI-Van-Opzeeland-02-quiet-ocean-clip.mp3,3,natural_sound,16000,1,19.65,Natural Sounds:Quiet-AWI-Van-Opzeeland-02-quiet-ocean-clip
+Natural Sounds\Rain-GRNMS-NOAA-PAGroup-02-rain-clip.mp3,3,natural_sound,48000,1,5.0,Natural Sounds:Rain-GRNMS-NOAA-PAGroup-02-rain-clip
+Natural Sounds\Sdsc01-HourlySancSdCompiled-GRNMS-NOAA-PAGroup-26-amplified-soundscape-clip.mp3,3,natural_sound,48000,1,60.0,Natural Sounds:Sdsc01-HourlySancSdCompiled-GRNMS-NOAA-PAGroup-26-amplified-soundscape-clip
+Natural Sounds\Storm-Meno-Fish-Multisound-NOAA-PAGroup-01-amplified-thunderstorm-clip.mp3,3,natural_sound,48000,1,8.83,Natural Sounds:Storm-Meno-Fish-Multisound-NOAA-PAGroup-01-amplified-thunderstorm-clip
+Natural Sounds\in1.wav,3,natural_sound,52734,1,301.36,Natural Sounds:in1
+Natural Sounds\in2.wav,3,natural_sound,52734,1,99.93,Natural Sounds:in2
+Natural Sounds\in3.wav,3,natural_sound,52734,1,53.64,Natural Sounds:in3
+Human made Objects\163494__tompallant__wood_metal_impact_shake_earthquake_banging.wav,4,other_anthropogenic,48000,1,68.35,freesound:tompallant
+Human made Objects\719865__q__rumble-1.wav,4,other_anthropogenic,48000,2,4.81,freesound:q
+Human made Objects\752142__newlocknew__dsgnrmbl_steady-versatile-rumble-12_em.wav,4,other_anthropogenic,48000,2,13.2,freesound:newlocknew
+other_anthropogenic\Echo-ping-SBNMS-NOAA-PAGroup-01-amplified-echosounder-clip.mp3,4,other_anthropogenic,8000,1,2.25,other_anthropogenic:Echo-ping-SBNMS-NOAA-PAGroup-01-amplified-echosounder-clip
+other_anthropogenic\Pile-driving-high-level-MarthasVineyardFerryTerminal-NOAA-PAGroup-02-Rowell-pile-driving-clip.mp3,4,other_anthropogenic,48000,1,30.0,other_anthropogenic:Pile-driving-high-level-MarthasVineyardFerryTerminal-NOAA-PAGroup-02-Rowell-pile-driving-clip
+other_anthropogenic\Seis-pulse-GuadeloupeWest-NOAA-PAGroup-01-amplified-seismic-clip (1).mp3,4,other_anthropogenic,8000,1,69.97,other_anthropogenic:Seis-pulse-GuadeloupeWest-NOAA-PAGroup-01-amplified-seismic-clip (1)

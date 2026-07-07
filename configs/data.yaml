@@ -1,0 +1,31 @@
+# Paths are relative to the project root (echosentinel_v2/) unless absolute.
+dataset_root: "../Dataset"
+
+# Source folders for clean training events, mapped to a default PS-12 class.
+# "review" means per-file keyword rules + human review decide (see data/audit.py).
+source_folders:
+  "Marine Animals": marine_animal
+  "Natural Sounds": natural_sound
+  "Human made Objects": review
+  "Cargo dataset": vessel
+  "Tanker ds": vessel
+  "Tug ds": vessel
+  "passengership ds": vessel
+  "other_anthropogenic": other_anthropogenic   # user-downloaded clips (NOAA/SanctSound); strays rerouted by filename keywords
+
+# Official unlabeled test sets — never used for supervised training.
+test_folders:
+  - "20251103_PS12"
+  - "I4_20251013_PS12"
+# Mock_Data_4_20251013_PS12 is a byte-duplicate of I4_20251013_PS12 and is ignored.
+
+manifests_dir: "manifests"
+relabel_review_csv: "manifests/relabel_review.csv"
+train_manifest_csv: "manifests/train.csv"
+
+audio:
+  target_sr: 32000
+  n_fft: 1024
+  hop_length: 320
+  n_mels: 64
+  fmin: 20.0

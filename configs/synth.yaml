@@ -1,0 +1,28 @@
+# Scene synthesizer (Phase 2). Initial values — tuned later against synth-val IER.
+scene:
+  duration_range: [30.0, 120.0]     # seconds
+  events_per_scene: [0, 4]          # uniform int range, non-overlapping placement
+  min_gap: 1.0                      # seconds of bed between events (PS-12: classes separated in time)
+
+snr:
+  range_db: [-5.0, 20.0]
+  skew_low: true                    # sample density biased toward low SNR (where the score is won)
+
+background:
+  ambient_synthetic: true           # filtered brown/pink noise ocean bed
+  engine_beds_from_vessel_data: true
+  use_mined_noise: false            # bottom-decile stationary segments mined from official test files (A/B flag)
+  mined_noise_gain_db: -12.0        # mined beds only mixed quietly under synthetic ambient
+
+augment:
+  gain_db: [-6.0, 6.0]
+  time_stretch: [0.9, 1.1]
+  lowpass_khz_choices: [4, 8, 16, null]   # simulate 8/16/32 kHz-native test files (null = no lowpass)
+  quantize_8bit_prob: 0.1
+  spec_augment:
+    time_masks: 2
+    time_mask_max: 50               # frames (10 ms each)
+    freq_masks: 2
+    freq_mask_max: 8                # mel bins
+
+procedural_class4: true             # synth sonar pings/sweeps/clanks as other_anthropogenic backup
