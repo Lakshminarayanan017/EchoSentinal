@@ -81,8 +81,15 @@ def load_audio(
         with sf.SoundFile(path) as f:
             start = int(offset * f.samplerate)
             frames = -1 if duration is None else int(duration * f.samplerate)
-            f.seek(start)
-            y = f.read(frames=frames, dtype="float32", always_2d=False)
+            if path.lower().endswith(".mp3"):
+                # mpg123 seeks are unreliable (bit-reservoir errors); MP3s in
+                # this project are small, so decode fully and slice in memory.
+                y = f.read(dtype="float32", always_2d=False)
+                end = len(y) if frames < 0 else min(start + frames, len(y))
+                y = y[start:end]
+            else:
+                f.seek(start)
+                y = f.read(frames=frames, dtype="float32", always_2d=False)
             sr = f.samplerate
     except Exception as primary_err:  # exotic container/encoding: fall back
         try:
