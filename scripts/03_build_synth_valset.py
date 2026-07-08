@@ -24,17 +24,29 @@ def main() -> None:
     parser.add_argument("--out", default=str(PROJECT_ROOT / "out" / "synth_valset"))
     parser.add_argument("--n-scenes", type=int, default=24)
     parser.add_argument("--seconds", type=float, default=60.0)
+    parser.add_argument("--mined", action="store_true",
+                        help="mix mined real-noise beds into the val scenes "
+                             "(matches training when use_mined_noise is on)")
     args = parser.parse_args()
 
     data_cfg = OmegaConf.load(args.data_config)
     dataset_root = (PROJECT_ROOT / str(data_cfg.dataset_root)).resolve()
     manifest = pd.read_csv(PROJECT_ROOT / str(data_cfg.train_manifest_csv))
 
+    mined_dir = None
+    if args.mined:
+        candidate = dataset_root / str(data_cfg.get("noise_bed_folder", "mined_noise"))
+        if candidate.is_dir() and any(candidate.glob("*.wav")):
+            mined_dir = candidate
+        else:
+            print(f"--mined requested but {candidate} is empty; building without.")
+
     _, val_df = grouped_split(manifest)
     source = val_df if len(val_df) >= 10 else manifest
     gt = build_valset(
         source, dataset_root, Path(args.out),
         n_scenes=args.n_scenes, scene_seconds=args.seconds,
+        mined_noise_dir=mined_dir,
     )
     print(f"Validation set written to {args.out} (ground truth: {gt})")
 

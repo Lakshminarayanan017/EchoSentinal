@@ -23,3 +23,5 @@ synth:
   snr_skew_low: true
   engine_bed_prob: 0.6
   procedural_class4_prob: 0.4
+  master_gain_db_range: [-25.0, 0.0]   # level invariance: whole scene scaled randomly
+  use_mined_noise: true                # real test-recording beds (Dataset/mined_noise)

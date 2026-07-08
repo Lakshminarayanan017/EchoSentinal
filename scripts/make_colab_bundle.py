@@ -30,6 +30,8 @@ EXCLUDE_SUFFIXES = {".pt", ".pth", ".ckpt", ".pyc", ".zip"}
 def _training_folders() -> set[str]:
     cfg = OmegaConf.load(PROJECT_ROOT / "configs" / "data.yaml")
     train = set(cfg.source_folders.keys())
+    # mined background beds ride along with the training data
+    train.add(str(cfg.get("noise_bed_folder", "mined_noise")))
     test = set(cfg.test_folders)
     return train, test
 

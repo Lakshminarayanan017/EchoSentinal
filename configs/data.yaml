@@ -25,6 +25,10 @@ test_folders:
   - "I4_20251013_PS12"
 # Mock_Data_4_20251013_PS12 is a byte-duplicate of I4_20251013_PS12 and is ignored.
 
+# Unlabeled background beds mined from the test recordings (scripts/02_build_noise_bank.py).
+# NOT a source folder — never labeled, never audited as events.
+noise_bed_folder: "mined_noise"
+
 manifests_dir: "manifests"
 relabel_review_csv: "manifests/relabel_review.csv"
 train_manifest_csv: "manifests/train.csv"

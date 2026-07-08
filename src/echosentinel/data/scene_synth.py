@@ -101,6 +101,8 @@ class SceneSynthesizer:
         min_gap_s: float = 1.0,
         procedural_class4_prob: float = 0.5,
         engine_bed_prob: float = 0.6,
+        mined_noise_dir: str | Path | None = None,
+        master_gain_db_range: tuple[float, float] = (-25.0, 0.0),
     ) -> None:
         self.rng = rng
         self.sr = sr
@@ -110,6 +112,11 @@ class SceneSynthesizer:
         self.min_gap_s = min_gap_s
         self.procedural_class4_prob = procedural_class4_prob
         self.dataset_root = dataset_root
+        # Master gain scales the FINISHED scene (bed + events together),
+        # teaching level invariance: the real test recordings range from
+        # near-silent to loud, and a model trained at one absolute level
+        # under-detects at others (measured: 77% misses on quiet scenes).
+        self.master_gain_db_range = master_gain_db_range
 
         self.pools: dict[int, list[tuple[Path, float]]] = {}
         for class_id, group in manifest.groupby("class_id"):
@@ -119,8 +126,11 @@ class SceneSynthesizer:
             ]
         # Engine beds are synthetic (see noise_bank) and independent of the
         # vessel event pool, so vessel events stay timbrally distinct from the
-        # background drone.
-        self.noise_bank = NoiseBank(sr=sr, rng=rng, engine_bed_prob=engine_bed_prob)
+        # background drone. Mined beds add the real test-recording texture.
+        self.noise_bank = NoiseBank(
+            sr=sr, rng=rng, engine_bed_prob=engine_bed_prob,
+            mined_noise_dir=mined_noise_dir,
+        )
         # Classes we can actually draw events for.
         self.event_classes = [c for c, pool in self.pools.items() if pool]
         if NAME_TO_ID["other_anthropogenic"] not in self.event_classes:
@@ -152,7 +162,7 @@ class SceneSynthesizer:
         self, duration_s: float, n_events_range: tuple[int, int] = (0, 3)
     ) -> tuple[np.ndarray, list[SceneEvent]]:
         n_samples = int(duration_s * self.sr)
-        scene = self.noise_bank.bed(n_samples)
+        scene, _ = self.noise_bank.bed(n_samples)
         bed_rms_db = 20 * np.log10(float(np.sqrt(np.mean(scene**2))) + 1e-10)
 
         n_events = int(self.rng.integers(n_events_range[0], n_events_range[1] + 1))
@@ -186,6 +196,10 @@ class SceneSynthesizer:
         peak = float(np.max(np.abs(scene)))
         if peak > 1.0:
             scene /= peak
+        # Level invariance: scale bed + events together so the model sees the
+        # same scene at many absolute levels (labels are unaffected).
+        master_gain = 10.0 ** (float(self.rng.uniform(*self.master_gain_db_range)) / 20.0)
+        scene *= master_gain
         events.sort(key=lambda e: e.start_s)
         return scene.astype(np.float32, copy=False), events
 

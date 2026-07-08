@@ -54,10 +54,39 @@ def test_engine_bed_is_synthetic_not_from_vessel_pool(tiny_dataset):
     from echosentinel.data.noise_bank import NoiseBank
 
     bank = NoiseBank(sr=TARGET_SR, rng=np.random.default_rng(0), engine_bed_prob=1.0)
-    bed = bank.bed(TARGET_SR * 2)
+    bed, ambient_dbfs = bank.bed(TARGET_SR * 2)
     assert bed.shape == (TARGET_SR * 2,)
     assert bed.dtype == np.float32
     assert np.isfinite(bed).all()
+    assert -55.0 <= ambient_dbfs <= -30.0  # per-scene randomized level
+
+
+def test_mined_noise_beds_are_mixed_in(tmp_path):
+    from echosentinel.data.noise_bank import NoiseBank
+
+    rng = np.random.default_rng(0)
+    snippet = (rng.standard_normal(TARGET_SR * 3) * 0.05).astype(np.float32)
+    sf.write(tmp_path / "mined_001.wav", snippet, TARGET_SR)
+    bank = NoiseBank(
+        sr=TARGET_SR, rng=np.random.default_rng(1), engine_bed_prob=0.0,
+        mined_noise_dir=tmp_path, mined_bed_prob=1.0,
+    )
+    bed, _ = bank.bed(TARGET_SR * 5)  # longer than snippet -> exercises tiling
+    assert bed.shape == (TARGET_SR * 5,)
+    assert np.isfinite(bed).all()
+
+
+def test_master_gain_varies_scene_level(tiny_dataset):
+    manifest, root = tiny_dataset
+    synth = SceneSynthesizer(
+        manifest, root, np.random.default_rng(5),
+        master_gain_db_range=(-25.0, 0.0),
+    )
+    levels = []
+    for _ in range(8):
+        scene, _ = synth.make_scene(5.0, n_events_range=(0, 0))
+        levels.append(20 * np.log10(np.sqrt((scene**2).mean()) + 1e-12))
+    assert max(levels) - min(levels) > 6.0  # scenes span clearly different levels
 
 
 def test_procedural_class4_without_real_data(tiny_dataset):

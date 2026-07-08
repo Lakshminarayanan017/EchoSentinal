@@ -1,22 +1,27 @@
 """Background noise beds for the scene synthesizer.
 
-Two components:
-- synthetic ambient ocean noise (1/f "pink-ish" spectrum), and
+Three components, mixed per scene:
+- synthetic ambient ocean noise (1/f "pink-ish" spectrum) at a RANDOMIZED
+  level per scene (level invariance: the real test set spans near-silent
+  recordings to loud ones, so training must too),
 - a synthetic machinery/engine drone (low-frequency harmonic stack + rumble
-  with slow amplitude modulation), standing in for the platform's own engine
-  noise that pervades the PS-12 test recordings.
+  with slow amplitude modulation) standing in for platform engine noise, and
+- optional MINED beds: quiet stationary windows extracted from the official
+  unlabeled test recordings (scripts/02_build_noise_bank.py), giving the
+  model the *real* background texture. Mined beds are mixed on top of the
+  synthetic ambient, never used alone, and never labeled.
 
-Design decision: the engine drone is *unlabeled background* — the continuous
-machine noise the model must see through. Crucially it is SYNTHETIC, not cut
-from the vessel training recordings, so it is timbrally distinct from the
-vessel *events* (which are the real ship recordings placed at event-level
-SNR and labeled class 1). Using real vessel audio as the bed taught an earlier
-model that "continuous vessel timbre = background", collapsing vessel recall;
-a distinct synthetic drone removes that collision while still forcing
-robustness to a loud stationary background.
+Design decision: all bed components are unlabeled background, and the engine
+drone is SYNTHETIC — not cut from the vessel training recordings — so it is
+timbrally distinct from the vessel *events* (real ship recordings placed at
+event-level SNR, labeled class 1). Using real vessel audio as the bed taught
+an earlier model that "continuous vessel timbre = background", collapsing
+vessel recall.
 """
 
 from __future__ import annotations
+
+from pathlib import Path
 
 import numpy as np
 
@@ -54,31 +59,65 @@ def engine_drone(n_samples: int, sr: int, rng: np.random.Generator) -> np.ndarra
 
 
 class NoiseBank:
-    """Provides background beds of arbitrary length."""
+    """Provides background beds of arbitrary length.
+
+    ``bed()`` also returns the drawn ambient level so the synthesizer can set
+    event SNRs relative to the actual bed of this scene.
+    """
 
     def __init__(
         self,
         sr: int,
         rng: np.random.Generator,
         engine_bed_prob: float = 0.6,
-        ambient_dbfs: float = -35.0,
+        ambient_dbfs_range: tuple[float, float] = (-55.0, -30.0),
         engine_gain_db_range: tuple[float, float] = (-10.0, 2.0),
+        mined_noise_dir: str | Path | None = None,
+        mined_bed_prob: float = 0.5,
+        mined_gain_db_range: tuple[float, float] = (-3.0, 6.0),
     ) -> None:
         self.sr = sr
         self.rng = rng
         self.engine_bed_prob = engine_bed_prob
-        self.ambient_dbfs = ambient_dbfs
+        self.ambient_dbfs_range = ambient_dbfs_range
         self.engine_gain_db_range = engine_gain_db_range
+        self.mined_bed_prob = mined_bed_prob
+        self.mined_gain_db_range = mined_gain_db_range
+        self.mined_files: list[Path] = []
+        if mined_noise_dir is not None:
+            self.mined_files = sorted(Path(mined_noise_dir).glob("*.wav"))
 
-    def bed(self, n_samples: int) -> np.ndarray:
-        """Ambient bed, optionally with a synthetic engine drone mixed in."""
-        out = rms_normalize_arr(pink_noise(n_samples, self.rng), self.ambient_dbfs)
+    def _mined_window(self, n_samples: int) -> np.ndarray | None:
+        if not self.mined_files:
+            return None
+        from echosentinel.audio.io import load_audio  # local import: avoids cycle
+
+        path = self.mined_files[self.rng.integers(len(self.mined_files))]
+        y, _ = load_audio(path, target_sr=self.sr)
+        if len(y) == 0:
+            return None
+        if len(y) < n_samples:  # tile short snippets to scene length
+            y = np.tile(y, int(np.ceil(n_samples / len(y))))
+        start = int(self.rng.integers(0, max(len(y) - n_samples, 1)))
+        return y[start : start + n_samples]
+
+    def bed(self, n_samples: int) -> tuple[np.ndarray, float]:
+        """Compose a background bed. Returns (bed, ambient_dbfs_drawn)."""
+        ambient_dbfs = float(self.rng.uniform(*self.ambient_dbfs_range))
+        out = rms_normalize_arr(pink_noise(n_samples, self.rng), ambient_dbfs)
+
         if self.rng.random() < self.engine_bed_prob:
             engine = engine_drone(n_samples, self.sr, self.rng)
             gain_db = float(self.rng.uniform(*self.engine_gain_db_range))
-            engine = rms_normalize_arr(engine, self.ambient_dbfs + gain_db)
-            out = out + engine
-        return out.astype(np.float32, copy=False)
+            out = out + rms_normalize_arr(engine, ambient_dbfs + gain_db)
+
+        if self.mined_files and self.rng.random() < self.mined_bed_prob:
+            mined = self._mined_window(n_samples)
+            if mined is not None:
+                gain_db = float(self.rng.uniform(*self.mined_gain_db_range))
+                out = out + rms_normalize_arr(mined, ambient_dbfs + gain_db)
+
+        return out.astype(np.float32, copy=False), ambient_dbfs
 
 
 def rms_normalize_arr(y: np.ndarray, target_dbfs: float, eps: float = 1e-10) -> np.ndarray:

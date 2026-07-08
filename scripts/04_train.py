@@ -72,7 +72,21 @@ def main() -> None:
         snr_skew_low=bool(cfg.synth.snr_skew_low),
         engine_bed_prob=float(cfg.synth.engine_bed_prob),
         procedural_class4_prob=float(cfg.synth.procedural_class4_prob),
+        master_gain_db_range=tuple(cfg.synth.get("master_gain_db_range", (-25.0, 0.0))),
+        mined_noise_dir=_mined_noise_dir(cfg, data_cfg, dataset_root),
     )
+
+
+def _mined_noise_dir(cfg, data_cfg, dataset_root: Path) -> Path | None:
+    """Resolve the mined-noise bed folder when enabled and non-empty."""
+    if not bool(cfg.synth.get("use_mined_noise", False)):
+        return None
+    folder = dataset_root / str(data_cfg.get("noise_bed_folder", "mined_noise"))
+    if not folder.is_dir() or not any(folder.glob("*.wav")):
+        print(f"NOTE: use_mined_noise=true but {folder} is empty — run "
+              f"scripts/02_build_noise_bank.py first. Training without mined beds.")
+        return None
+    return folder
 
 
 if __name__ == "__main__":
