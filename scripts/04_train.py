@@ -28,12 +28,24 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--epoch-size", type=int, default=None)
     parser.add_argument("--device", default=None)
+    parser.add_argument("--no-pretrained", action="store_true",
+                        help="skip loading the pretrained backbone (for smoke tests)")
     args = parser.parse_args()
 
     cfg = OmegaConf.load(args.config)
     data_cfg = OmegaConf.load(args.data_config)
     dataset_root = (PROJECT_ROOT / str(data_cfg.dataset_root)).resolve()
     manifest = pd.read_csv(PROJECT_ROOT / str(data_cfg.train_manifest_csv))
+
+    model_kwargs = OmegaConf.to_container(cfg.model_kwargs) if "model_kwargs" in cfg else {}
+    pretrained = None
+    if cfg.get("pretrained_backbone") and not args.no_pretrained:
+        pretrained = PROJECT_ROOT / str(cfg.pretrained_backbone)
+        if not pretrained.exists():
+            raise SystemExit(
+                f"Pretrained backbone {pretrained} not found — run "
+                f"'python scripts/fetch_pretrained.py' first (needs internet once)."
+            )
 
     train(
         manifest=manifest,
@@ -49,6 +61,8 @@ def main() -> None:
         val_scenes=int(cfg.val_scenes),
         num_workers=int(cfg.num_workers),
         device=args.device,
+        model_kwargs=model_kwargs,
+        pretrained_backbone=pretrained,
         snr_db_range=tuple(cfg.synth.snr_db_range),
         snr_skew_low=bool(cfg.synth.snr_skew_low),
         engine_bed_prob=float(cfg.synth.engine_bed_prob),

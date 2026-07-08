@@ -1,0 +1,25 @@
+# PANNs CNN14 + PCEN — the "powerful engine" (Phase 2). Train on Colab/Kaggle GPU.
+model: panns
+model_kwargs:
+  frontend: pcen           # pcen (default) | logmel
+  spec_augment: true
+  dropout: 0.2
+
+# Pretrained AudioSet backbone (run scripts/fetch_pretrained.py once, needs internet).
+pretrained_backbone: "weights/Cnn14_mAP=0.431.pth"
+
+epochs: 60
+batch_size: 24            # fits a Colab T4; lower to 12 on CPU
+epoch_size: 1024
+scene_seconds: 10.0
+lr: 0.0005                # low LR: fine-tuning a pretrained backbone
+label_pool: 4
+val_scenes: 64
+num_workers: 2
+weights_out: "weights/panns_pcen.pt"
+
+synth:
+  snr_db_range: [-5.0, 20.0]
+  snr_skew_low: true
+  engine_bed_prob: 0.6
+  procedural_class4_prob: 0.4

@@ -1,5 +1,9 @@
 # CRNN baseline training config (Phase 1). Colab/Kaggle can raise epochs/epoch_size.
 model: crnn
+model_kwargs:
+  frontend: logmel         # logmel | pcen (cheap PCEN-vs-logmel ablation)
+  spec_augment: true
+pretrained_backbone: null
 epochs: 30
 batch_size: 16
 epoch_size: 512          # synthesized scenes per epoch

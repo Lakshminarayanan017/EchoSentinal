@@ -74,6 +74,8 @@ def train(
     val_scenes: int = 48,
     num_workers: int = 0,
     device: str | None = None,
+    model_kwargs: dict | None = None,
+    pretrained_backbone: Path | None = None,
     log=print,
     **synth_kwargs,
 ) -> Path:
@@ -94,7 +96,11 @@ def train(
         dataset_root, val_scenes, scene_seconds, label_pool, **synth_kwargs,
     )
 
-    model = build_model(model_name).to(device)
+    model = build_model(model_name, **(model_kwargs or {}))
+    if pretrained_backbone is not None and hasattr(model, "load_backbone"):
+        report = model.load_backbone(pretrained_backbone)
+        log(f"Loaded pretrained backbone: {report['loaded']} tensors from {pretrained_backbone}")
+    model = model.to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
     criterion = framewise_bce().to(device)
@@ -136,7 +142,8 @@ def train(
         if metrics["f1_macro"] > best_f1:
             best_f1 = metrics["f1_macro"]
             torch.save(
-                {"model_name": model_name, "state_dict": model.state_dict(),
+                {"model_name": model_name, "model_kwargs": model_kwargs or {},
+                 "state_dict": model.state_dict(),
                  "f1_macro": best_f1, "epoch": epoch},
                 out_path,
             )

@@ -28,7 +28,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 
 def load_model(weights_path: Path, device: str) -> tuple[torch.nn.Module, float]:
     ckpt = torch.load(weights_path, map_location=device, weights_only=True)
-    model = build_model(ckpt["model_name"])
+    model = build_model(ckpt["model_name"], **ckpt.get("model_kwargs", {}))
     model.load_state_dict(ckpt["state_dict"])
     model.to(device).eval()
     return model, model_frames_per_second(ckpt["model_name"])

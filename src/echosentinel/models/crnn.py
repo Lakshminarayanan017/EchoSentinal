@@ -11,7 +11,9 @@ import torch
 from torch import nn
 
 from echosentinel.constants import N_MELS, NUM_CLASSES
+from echosentinel.features.augment import SpecAugment
 from echosentinel.features.melspec import LogMel
+from echosentinel.features.pcen import PCEN
 
 TIME_POOL = 4  # total time downsampling of the conv stack
 
@@ -34,12 +36,16 @@ class ConvBlock(nn.Module):
 class CRNN(nn.Module):
     def __init__(
         self,
+        frontend: str = "logmel",
         n_mels: int = N_MELS,
         n_classes: int = NUM_CLASSES,
         rnn_hidden: int = 128,
+        spec_augment: bool = True,
     ) -> None:
         super().__init__()
-        self.frontend = LogMel()
+        self.frontend_name = frontend
+        self.frontend = PCEN() if frontend == "pcen" else LogMel()
+        self.spec_augment = SpecAugment() if spec_augment else nn.Identity()
         self.bn_input = nn.BatchNorm2d(1)
         self.conv = nn.Sequential(
             ConvBlock(1, 32, pool=(2, 2)),   # mels/2, T/2
@@ -57,6 +63,7 @@ class CRNN(nn.Module):
     def forward(self, waveform: torch.Tensor) -> torch.Tensor:
         """(B, samples) waveform -> (B, T/TIME_POOL, n_classes) logits."""
         x = self.frontend(waveform)              # (B, mels, T)
+        x = self.spec_augment(x)
         x = self.bn_input(x.unsqueeze(1))        # (B, 1, mels, T)
         x = self.conv(x)                         # (B, 128, mels/16, T/4)
         b, c, f, t = x.shape
