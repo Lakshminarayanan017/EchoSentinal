@@ -11,17 +11,7 @@ from __future__ import annotations
 import argparse
 
 from echosentinel.eval.ier import IERScorer
-from echosentinel.infer.json_writer import read_results_json
-
-
-def events_by_file(results: dict) -> dict[str, list[tuple[int, float, float]]]:
-    id_to_name = {a["id"]: a["file_name"] for a in results["audios"]}
-    out: dict[str, list[tuple[int, float, float]]] = {n: [] for n in id_to_name.values()}
-    for ann in results["annotations"]:
-        out[id_to_name[ann["audio_id"]]].append(
-            (ann["category_id"], float(ann["start_time"]), float(ann["end_time"]))
-        )
-    return out
+from echosentinel.infer.json_writer import events_by_file, read_results_json
 
 
 def main() -> None:

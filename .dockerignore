@@ -1,0 +1,16 @@
+# Build context is the repo root; keep the context lean.
+Dataset/
+.venv/
+.git/
+out/
+runs/
+notebooks/
+tests/
+echosentinal/
+*.zip
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+# every weight except the one the Dockerfile copies explicitly
+weights/*.pth
+weights/crnn_baseline.pt

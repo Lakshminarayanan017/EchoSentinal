@@ -62,3 +62,14 @@ def write_results_json(path: str | Path, results: dict) -> None:
 def read_results_json(path: str | Path) -> dict:
     with open(path, encoding="utf-8") as f:
         return json.load(f)
+
+
+def events_by_file(results: dict) -> dict[str, list[tuple[int, float, float]]]:
+    """Results JSON -> {file_name: [(category_id, start_s, end_s), ...]}."""
+    id_to_name = {a["id"]: a["file_name"] for a in results["audios"]}
+    out: dict[str, list[tuple[int, float, float]]] = {n: [] for n in id_to_name.values()}
+    for ann in results["annotations"]:
+        out[id_to_name[ann["audio_id"]]].append(
+            (ann["category_id"], float(ann["start_time"]), float(ann["end_time"]))
+        )
+    return out

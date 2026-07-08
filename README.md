@@ -45,6 +45,31 @@ pytest
 
 Class-4 training data is user-supplied — see [docs/class4_sources.md](docs/class4_sources.md).
 
+## Docker (offline inference package)
+
+With trained weights at `weights/panns_pcen.pt` (and Docker Desktop installed):
+
+```powershell
+cd echosentinel_v2
+docker build -f docker/Dockerfile -t echosentinel .
+docker run --rm --network none -v C:\path\to\wavs:/data/in:ro -v C:\path\to\out:/data/out echosentinel
+```
+
+`--network none` proves the container is internet-independent (a PS-12 requirement);
+output lands at `out/results.json` in the competition JSON format.
+
+## Threshold calibration
+
+Post-processing thresholds are model-specific. After every (re)training:
+
+```powershell
+python scripts/03_build_synth_valset.py --n-scenes 24 --seconds 60
+python scripts/06_tune_thresholds.py --weights weights/panns_pcen.pt --write
+```
+
+This searches per-class hysteresis thresholds and the median filter against the
+exact IER metric and writes the winners into `configs/inference.yaml`.
+
 ## Repo layout
 
 - `src/echosentinel/` — the installable package (audio IO, features, data/synthesizer, models, training, inference, evaluation)

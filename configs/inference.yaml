@@ -1,23 +1,29 @@
-# Inference & post-processing (Phase 1/3). Thresholds are re-tuned per model
-# on the synthetic validation set for the asymmetric IER (miss=1.0, FA=0.25):
-# deliberately low thresholds -> recall-biased.
-block_seconds: 30.0                 # streaming decode block for huge files
+# Inference & post-processing. `thresholds` and `median_filter_seconds` are
+# MODEL-SPECIFIC and auto-calibrated by scripts/06_tune_thresholds.py --write
+# (re-run after every retrain; note it rewrites this file without comments).
+# Thresholds are hysteresis pairs (onset high / sustain low), recall-biased
+# because a missed event costs 4x a false alarm in the IER.
+block_seconds: 30.0
 block_overlap_seconds: 2.0
-
 posteriors:
   median_filter_seconds: 0.7
-
-thresholds:                         # per-class hysteresis: onset high, sustain low
-  vessel:              {high: 0.40, low: 0.20}
-  marine_animal:       {high: 0.35, low: 0.15}
-  natural_sound:       {high: 0.40, low: 0.20}
-  other_anthropogenic: {high: 0.30, low: 0.15}
-
+thresholds:
+  vessel:
+    high: 0.3
+    low: 0.18
+  marine_animal:
+    high: 0.5
+    low: 0.4
+  natural_sound:
+    high: 0.5
+    low: 0.2
+  other_anthropogenic:
+    high: 0.3
+    low: 0.15
 events:
-  merge_gap_seconds: 1.0            # merge same-class events separated by short gaps
-  min_duration_seconds: 1.0         # drop shorter events (timestamps round to seconds anyway)
+  merge_gap_seconds: 1.0
+  min_duration_seconds: 1.0
   round_to_seconds: true
-  enforce_non_overlap: true         # PS-12 rejects overlapping annotations
-
+  enforce_non_overlap: true
 json:
-  startup_name: "ECHOSENTINEL"
+  startup_name: ECHOSENTINEL
