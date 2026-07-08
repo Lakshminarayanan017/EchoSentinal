@@ -15,6 +15,8 @@ source_folders:
   "anchor_chain": other_anthropogenic          # Freesound anchor/chain clips
   "hydrophone_scubaDiving": other_anthropogenic # Freesound scuba/diver gear (propeller strays -> vessel)
   "sonar_ping": other_anthropogenic            # Freesound sonar/submarine pings
+  "depth_charge": other_anthropogenic          # Freesound underwater explosions
+  "pile_driver": other_anthropogenic           # Freesound pile driving
 
 # Official unlabeled test sets — never used for supervised training.
 test_folders:
