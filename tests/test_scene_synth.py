@@ -48,6 +48,18 @@ def test_scene_invariants(tiny_dataset):
             assert a.end_s <= b.start_s
 
 
+def test_engine_bed_is_synthetic_not_from_vessel_pool(tiny_dataset):
+    # The bed must be generatable with no vessel files at all -> proves it no
+    # longer depends on (and cannot leak timbre from) the vessel event pool.
+    from echosentinel.data.noise_bank import NoiseBank
+
+    bank = NoiseBank(sr=TARGET_SR, rng=np.random.default_rng(0), engine_bed_prob=1.0)
+    bed = bank.bed(TARGET_SR * 2)
+    assert bed.shape == (TARGET_SR * 2,)
+    assert bed.dtype == np.float32
+    assert np.isfinite(bed).all()
+
+
 def test_procedural_class4_without_real_data(tiny_dataset):
     manifest, root = tiny_dataset  # no class 4 in the pool at all
     synth = SceneSynthesizer(

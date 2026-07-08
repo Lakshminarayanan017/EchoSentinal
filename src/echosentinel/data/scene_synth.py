@@ -117,10 +117,10 @@ class SceneSynthesizer:
                 (dataset_root / p, float(d))
                 for p, d in zip(group["path"], group["duration_s"])
             ]
-        vessel_pool = self.pools.get(NAME_TO_ID["vessel"], [])
-        self.noise_bank = NoiseBank(
-            vessel_pool, sr=sr, rng=rng, engine_bed_prob=engine_bed_prob
-        )
+        # Engine beds are synthetic (see noise_bank) and independent of the
+        # vessel event pool, so vessel events stay timbrally distinct from the
+        # background drone.
+        self.noise_bank = NoiseBank(sr=sr, rng=rng, engine_bed_prob=engine_bed_prob)
         # Classes we can actually draw events for.
         self.event_classes = [c for c, pool in self.pools.items() if pool]
         if NAME_TO_ID["other_anthropogenic"] not in self.event_classes:

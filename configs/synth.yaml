@@ -10,7 +10,7 @@ snr:
 
 background:
   ambient_synthetic: true           # filtered brown/pink noise ocean bed
-  engine_beds_from_vessel_data: true
+  synthetic_engine_drone: true      # low-freq harmonic drone (NOT cut from vessel data, so vessel events stay distinct)
   use_mined_noise: false            # bottom-decile stationary segments mined from official test files (A/B flag)
   mined_noise_gain_db: -12.0        # mined beds only mixed quietly under synthetic ambient
 
