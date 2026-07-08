@@ -24,7 +24,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EXCLUDE_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache",
                 "out", "runs", ".ipynb_checkpoints"}
 # Extensions to skip (trained/pretrained binaries are re-created on Colab).
-EXCLUDE_SUFFIXES = {".pt", ".pth", ".ckpt", ".pyc"}
+EXCLUDE_SUFFIXES = {".pt", ".pth", ".ckpt", ".pyc", ".zip"}
 
 
 def _training_folders() -> set[str]:
@@ -36,12 +36,19 @@ def _training_folders() -> set[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--out", default=str(PROJECT_ROOT / "echosentinel_v2_colab.zip"))
+    parser.add_argument("--out", default=None)
+    parser.add_argument(
+        "--code-only", action="store_true",
+        help="exclude Dataset/ entirely (~1 MB zip). Use when only code changed: "
+        "upload it next to the existing full zip and unzip it second in Colab.",
+    )
     args = parser.parse_args()
+    default_name = "echosentinel_v2_code.zip" if args.code_only else "echosentinel_v2_colab.zip"
+    out_path = Path(args.out) if args.out else PROJECT_ROOT / default_name
 
     train_folders, test_folders = _training_folders()
     dataset_root = PROJECT_ROOT / str(OmegaConf.load(PROJECT_ROOT / "configs" / "data.yaml").dataset_root)
-    out_zip = Path(args.out)
+    out_zip = out_path
 
     def keep(path: Path) -> bool:
         parts = set(path.relative_to(PROJECT_ROOT).parts)
@@ -49,11 +56,14 @@ def main() -> None:
             return False
         if path.suffix.lower() in EXCLUDE_SUFFIXES:
             return False
-        # Inside Dataset/, keep only training folders (skip test sets + mock).
+        # Inside Dataset/: exclude entirely for --code-only, otherwise keep
+        # only training folders (skip test sets + mock).
         try:
             rel = path.relative_to(dataset_root)
         except ValueError:
             return True
+        if args.code_only:
+            return False
         top = rel.parts[0] if rel.parts else ""
         return top in train_folders
 
