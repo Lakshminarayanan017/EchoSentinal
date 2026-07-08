@@ -12,6 +12,9 @@ source_folders:
   "Tug ds": vessel
   "passengership ds": vessel
   "other_anthropogenic": other_anthropogenic   # user-downloaded clips (NOAA/SanctSound); strays rerouted by filename keywords
+  "anchor_chain": other_anthropogenic          # Freesound anchor/chain clips
+  "hydrophone_scubaDiving": other_anthropogenic # Freesound scuba/diver gear (propeller strays -> vessel)
+  "sonar_ping": other_anthropogenic            # Freesound sonar/submarine pings
 
 # Official unlabeled test sets — never used for supervised training.
 test_folders:

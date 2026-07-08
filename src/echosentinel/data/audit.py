@@ -72,6 +72,14 @@ def _keyword_hit(name: str, keywords: tuple[str, ...]) -> str | None:
     return None
 
 
+def _description_part(filename: str) -> str:
+    """Drop the Freesound "NUMBER__uploader__" prefix so an uploader name like
+    'waveadventurer' cannot trigger the 'wave' keyword. Non-Freesound names
+    pass through unchanged."""
+    m = _FREESOUND_RE.match(filename)
+    return filename[m.end():] if m else filename
+
+
 def _keyword_class(filename: str) -> tuple[str, str] | None:
     """Best class suggested by filename keywords, or None.
 
@@ -80,13 +88,14 @@ def _keyword_class(filename: str) -> tuple[str, str] | None:
     natural wins over marine so a "thunderstorm" clip mentioning fish stays
     natural_sound.
     """
+    description = _description_part(filename)
     for keywords, cls in (
         (ANTHROPOGENIC_KEYWORDS, "other_anthropogenic"),
         (NATURAL_KEYWORDS, "natural_sound"),
         (MARINE_KEYWORDS, "marine_animal"),
         (VESSEL_KEYWORDS, "vessel"),
     ):
-        kw = _keyword_hit(filename, keywords)
+        kw = _keyword_hit(description, keywords)
         if kw:
             return cls, kw
     return None

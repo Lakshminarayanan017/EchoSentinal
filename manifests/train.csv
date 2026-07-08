@@ -42,6 +42,7 @@ Tanker ds\9.wav,1,vessel,32000,1,18.0,Tanker ds:9
 Tug ds\40.wav,1,vessel,32000,1,200.0,Tug ds:40
 Tug ds\49.wav,1,vessel,32000,1,190.0,Tug ds:49
 Tug ds\9.wav,1,vessel,32000,1,203.0,Tug ds:9
+hydrophone_scubaDiving\194229__zagi2__propeller-sfx.wav,1,vessel,44100,2,19.99,freesound:zagi2
 other_anthropogenic\Vess-05-large-vessel-clip.mp3,1,vessel,11025,1,300.0,other_anthropogenic:Vess-05-large-vessel-clip
 other_anthropogenic\Vess-GRNMS-NOAA-PAGroup-08-vessel-clip.mp3,1,vessel,48000,1,5.0,other_anthropogenic:Vess-GRNMS-NOAA-PAGroup-08-vessel-clip
 passengership ds\1.wav,1,vessel,32000,1,37.0,passengership ds:1
@@ -126,7 +127,6 @@ Human made Objects\719551__betostado99__earthquake-rumble.wav,3,natural_sound,48
 Human made Objects\727279__logicmoon__earthquake.wav,3,natural_sound,44100,2,93.0,freesound:logicmoon
 Human made Objects\729214__techspiredminds__stonefall3.wav,3,natural_sound,44100,1,1.24,freesound:techspiredminds
 Human made Objects\768871__gustavo_c__raining_inside.wav,3,natural_sound,44100,1,26.5,freesound:gustavo_c
-Human made Objects\818836__wavewire__lofi_rocksgrinding_reverberated-01.wav,3,natural_sound,44100,2,5.38,freesound:wavewire
 Human made Objects\rain1.wav,3,natural_sound,96000,2,29.0,Human made Objects:rain1
 Human made Objects\rain2.wav,3,natural_sound,96000,2,35.03,Human made Objects:rain2
 Human made Objects\rain3.wav,3,natural_sound,52734,1,120.0,Human made Objects:rain3
@@ -193,6 +193,36 @@ Natural Sounds\in3.wav,3,natural_sound,52734,1,53.64,Natural Sounds:in3
 Human made Objects\163494__tompallant__wood_metal_impact_shake_earthquake_banging.wav,4,other_anthropogenic,48000,1,68.35,freesound:tompallant
 Human made Objects\719865__q__rumble-1.wav,4,other_anthropogenic,48000,2,4.81,freesound:q
 Human made Objects\752142__newlocknew__dsgnrmbl_steady-versatile-rumble-12_em.wav,4,other_anthropogenic,48000,2,13.2,freesound:newlocknew
+Human made Objects\818836__wavewire__lofi_rocksgrinding_reverberated-01.wav,4,other_anthropogenic,44100,2,5.38,freesound:wavewire
+anchor_chain\201169__phonoflora__sukhapha-anchor-chain.wav,4,other_anthropogenic,44100,2,53.06,freesound:phonoflora
+anchor_chain\251555__waveadventurer__r05_0247.wav,4,other_anthropogenic,44100,2,32.96,freesound:waveadventurer
+anchor_chain\251556__waveadventurer__r05_0242.wav,4,other_anthropogenic,44100,2,30.49,freesound:waveadventurer
+anchor_chain\347837__fennelliott__anchor-and-chain.wav,4,other_anthropogenic,44000,2,27.9,freesound:fennelliott
+anchor_chain\435670__byjoshberry__anchor-chain.wav,4,other_anthropogenic,96000,1,34.43,freesound:byjoshberry
+anchor_chain\61685__benboncan__anchor-chain.wav,4,other_anthropogenic,44100,2,30.43,freesound:benboncan
+anchor_chain\61688__benboncan__anchor-chain-2.wav,4,other_anthropogenic,44100,2,19.81,freesound:benboncan
+hydrophone_scubaDiving\116656__ben_jamin0__scuba-tanks-breathing-dive.wav,4,other_anthropogenic,48000,1,13.44,freesound:ben_jamin0
+hydrophone_scubaDiving\156011__hdvideoguy__scubadiving_01.wav,4,other_anthropogenic,48000,2,44.44,freesound:hdvideoguy
+hydrophone_scubaDiving\184597__qubodup__scuba-diver-worker.flac,4,other_anthropogenic,48000,2,58.94,freesound:qubodup
+hydrophone_scubaDiving\31007__ctruiz__breathing.wav,4,other_anthropogenic,44100,1,15.8,freesound:ctruiz
+hydrophone_scubaDiving\482774__craigsmith__r23-20-scuba-diver.wav,4,other_anthropogenic,48000,1,14.18,freesound:craigsmith
+hydrophone_scubaDiving\490661__davi-sh__underwater-scuba-diver.wav,4,other_anthropogenic,48000,2,45.76,freesound:davi-sh
+hydrophone_scubaDiving\734301__klankbeeld__240426-scuba-diving-breathing-apparatus-bubbles-02.wav,4,other_anthropogenic,48000,2,14.36,freesound:klankbeeld
+hydrophone_scubaDiving\752121__klankbeeld__electric-boot-passing-underwater-429-pm-220726.wav,4,other_anthropogenic,48000,2,190.07,freesound:klankbeeld
 other_anthropogenic\Echo-ping-SBNMS-NOAA-PAGroup-01-amplified-echosounder-clip.mp3,4,other_anthropogenic,8000,1,2.25,other_anthropogenic:Echo-ping-SBNMS-NOAA-PAGroup-01-amplified-echosounder-clip
 other_anthropogenic\Pile-driving-high-level-MarthasVineyardFerryTerminal-NOAA-PAGroup-02-Rowell-pile-driving-clip.mp3,4,other_anthropogenic,48000,1,30.0,other_anthropogenic:Pile-driving-high-level-MarthasVineyardFerryTerminal-NOAA-PAGroup-02-Rowell-pile-driving-clip
 other_anthropogenic\Seis-pulse-GuadeloupeWest-NOAA-PAGroup-01-amplified-seismic-clip (1).mp3,4,other_anthropogenic,8000,1,69.97,other_anthropogenic:Seis-pulse-GuadeloupeWest-NOAA-PAGroup-01-amplified-seismic-clip (1)
+sonar_ping\105349__sandyrb__sonar-ping-pong-g.wav,4,other_anthropogenic,48000,1,3.67,freesound:sandyrb
+sonar_ping\20223__lg__subping02.wav,4,other_anthropogenic,44100,2,5.5,freesound:lg
+sonar_ping\258281__norman_hittle__sonar_submarine_radar_deepsea_hydrogen_skyline_com.wav,4,other_anthropogenic,48000,2,30.48,freesound:norman_hittle
+sonar_ping\31038__lg__subping03.wav,4,other_anthropogenic,48000,2,19.69,freesound:lg
+sonar_ping\383405__sirplus__sonar-pings-assorted.wav,4,other_anthropogenic,44100,2,103.14,freesound:sirplus
+sonar_ping\38704__elanhickler__archi_sonar_05.wav,4,other_anthropogenic,44100,2,4.0,freesound:elanhickler
+sonar_ping\42796__digifishmusic__sonar-ping.wav,4,other_anthropogenic,44100,2,4.21,freesound:digifishmusic
+sonar_ping\493162__breviceps__submarine-sonar.wav,4,other_anthropogenic,44100,2,9.44,freesound:breviceps
+sonar_ping\539957__samsterbirdies__sonar-ping.wav,4,other_anthropogenic,44100,1,3.5,freesound:samsterbirdies
+sonar_ping\568193__badoink__subnautical.wav,4,other_anthropogenic,44100,2,99.75,freesound:badoink
+sonar_ping\587813__steamb233__sonar-ping.wav,4,other_anthropogenic,44100,2,3.0,freesound:steamb233
+sonar_ping\620321__marb7e__sonar-ping-sine-wave.wav,4,other_anthropogenic,48000,2,3.29,freesound:marb7e
+sonar_ping\79603__plivesey__sub-ping-half-speed.wav,4,other_anthropogenic,44100,2,11.0,freesound:plivesey
+sonar_ping\808185__nicorico_120__sonar-ping.wav,4,other_anthropogenic,48000,2,3.43,freesound:nicorico_120

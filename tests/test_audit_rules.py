@@ -72,6 +72,13 @@ def test_keyword_needs_token_start_boundary():
     assert cls == "marine_animal"  # snapping shrimp is a marine animal
 
 
+def test_uploader_name_does_not_trigger_keyword():
+    # 'waveadventurer' is the Freesound uploader, not a wave sound; an
+    # anchor-chain clip must stay other_anthropogenic
+    cls, _, _ = propose_class("other_anthropogenic", "251555__waveadventurer__r05_0247.wav")
+    assert cls == "other_anthropogenic"
+
+
 def test_earthquake_misfiled_under_marine_is_relabeled():
     cls, conf, _ = propose_class(
         "marine_animal", "369485__mbari_mars__earthquake-audible-only-with-appropriate-speakers.wav"
