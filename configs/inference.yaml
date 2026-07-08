@@ -1,25 +1,24 @@
 # Inference & post-processing. `thresholds` and `median_filter_seconds` are
-# MODEL-SPECIFIC and auto-calibrated by scripts/06_tune_thresholds.py --write
-# (re-run after every retrain; note it rewrites this file without comments).
-# Thresholds are hysteresis pairs (onset high / sustain low), recall-biased
-# because a missed event costs 4x a false alarm in the IER.
+# MODEL-SPECIFIC, auto-calibrated by scripts/06_tune_thresholds.py --write
+# (re-run after every retrain; it rewrites this file without comments).
+# Calibrated for weights/panns_pcen.pt (epoch 37): synth-val IER 0.5677.
 block_seconds: 30.0
 block_overlap_seconds: 2.0
 posteriors:
-  median_filter_seconds: 0.7
+  median_filter_seconds: 1.2
 thresholds:
   vessel:
-    high: 0.3
-    low: 0.18
-  marine_animal:
-    high: 0.5
-    low: 0.4
-  natural_sound:
     high: 0.5
     low: 0.2
+  marine_animal:
+    high: 0.15
+    low: 0.09
+  natural_sound:
+    high: 0.15
+    low: 0.06
   other_anthropogenic:
-    high: 0.3
-    low: 0.15
+    high: 0.15
+    low: 0.06
 events:
   merge_gap_seconds: 1.0
   min_duration_seconds: 1.0

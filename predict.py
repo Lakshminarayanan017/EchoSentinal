@@ -38,7 +38,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input_dir", required=True)
     parser.add_argument("--output_json", required=True)
-    parser.add_argument("--weights", default=str(PROJECT_ROOT / "weights" / "crnn_baseline.pt"))
+    parser.add_argument("--weights", default=str(PROJECT_ROOT / "weights" / "panns_pcen.pt"))
     parser.add_argument("--config", default=str(PROJECT_ROOT / "configs" / "inference.yaml"))
     parser.add_argument("--device", default=None)
     args = parser.parse_args()

@@ -30,6 +30,9 @@ def main() -> None:
     parser.add_argument("--device", default=None)
     parser.add_argument("--no-pretrained", action="store_true",
                         help="skip loading the pretrained backbone (for smoke tests)")
+    parser.add_argument("--weights-out", default=None,
+                        help="override checkpoint path (e.g. a mounted Drive path so "
+                             "every improvement persists even if the session dies)")
     args = parser.parse_args()
 
     cfg = OmegaConf.load(args.config)
@@ -47,10 +50,12 @@ def main() -> None:
                 f"'python scripts/fetch_pretrained.py' first (needs internet once)."
             )
 
+    out_path = Path(args.weights_out) if args.weights_out else PROJECT_ROOT / str(cfg.weights_out)
+
     train(
         manifest=manifest,
         dataset_root=dataset_root,
-        out_path=PROJECT_ROOT / str(cfg.weights_out),
+        out_path=out_path,
         model_name=str(cfg.model),
         epochs=args.epochs or int(cfg.epochs),
         batch_size=int(cfg.batch_size),
