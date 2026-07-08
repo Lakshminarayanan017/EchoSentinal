@@ -16,7 +16,7 @@ import pytest
 from echosentinel.audio.io import load_audio, probe, rms_normalize
 from echosentinel.constants import TARGET_SR
 
-DATASET_ROOT = Path(__file__).resolve().parents[2] / "Dataset"
+DATASET_ROOT = Path(__file__).resolve().parents[1] / "Dataset"
 
 SCAN_FOLDERS = [
     "Marine Animals",

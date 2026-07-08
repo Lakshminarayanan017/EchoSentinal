@@ -1,5 +1,6 @@
 # Paths are relative to the project root (echosentinel_v2/) unless absolute.
-dataset_root: "../Dataset"
+# Dataset lives inside the repo so the whole thing zips/uploads as one unit.
+dataset_root: "Dataset"
 
 # Source folders for clean training events, mapped to a default PS-12 class.
 # "review" means per-file keyword rules + human review decide (see data/audit.py).

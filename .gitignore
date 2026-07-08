@@ -31,3 +31,7 @@ runs/
 out/
 lightning_logs/
 wandb/
+
+# Colab upload bundle
+echosentinel_v2_colab.zip
+*.zip
