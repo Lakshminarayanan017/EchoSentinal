@@ -17,7 +17,7 @@ dependencies = [
     "soundfile>=0.12.1",
     "soxr>=0.3.7",
     "omegaconf>=2.3.0",
-    "pandas>=2.0",
+    "pandas>=2.0,<2.4",
     "pyannote.metrics>=3.2",
     "tqdm>=4.66",
 ]
