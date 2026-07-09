@@ -1,3 +1,13 @@
+---
+title: echoSentinel
+emoji: 🔊
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 8080
+pinned: false
+---
+
 # echoSentinel v2
 
 Underwater sound event detection and classification for **PS-12: AI tools for Underwater
