@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>echoSentinel — Command Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/console.css"/>
+</head>
+<body>
+<main class="main">
+  <section class="rise" style="display:flex; gap:40px; align-items:center; flex-wrap:wrap; margin-bottom:34px;">
+    <div style="flex:1; min-width:320px;">
+      <div class="microlabel" style="margin-bottom:10px;">Underwater Domain Awareness · PS-12</div>
+      <h1 style="font:700 44px/1.05 var(--font-ui); letter-spacing:-0.01em; color:var(--text); text-shadow:0 0 24px rgba(0,240,255,.18);">
+        Acoustic detection &amp;<br/>classification console
+      </h1>
+      <p class="dim" style="max-width:560px; margin:16px 0 22px; font-size:15px; line-height:1.65;">
+        Detects sound events in hydrophone recordings under heavy engine noise and low
+        signal-to-noise conditions, classifying them as vessel, marine animal, natural
+        or anthropogenic sources. All processing is local and air-gap capable.
+      </p>
+      <div class="row">
+        <a class="btn" href="analyze.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12h3l2-6 4 12 3-9 2 3h6"/></svg>
+          Analyze recordings
+        </a>
+        <a class="btn ghost" href="archive.html">Mission archive</a>
+      </div>
+    </div>
+    <div class="radar" style="flex:0 0 280px;">
+      <div class="cross-h"></div><div class="cross-v"></div><div class="sweep"></div>
+    </div>
+  </section>
+
+  <section class="tiles" style="margin-bottom:26px;">
+    <div class="panel tile rise">
+      <div class="microlabel">Files analyzed</div>
+      <div class="num" id="stat-files">—</div>
+      <div class="sub">completed analyses</div>
+    </div>
+    <div class="panel tile rise">
+      <div class="microlabel">Events detected</div>
+      <div class="num" id="stat-events">—</div>
+      <div class="sub">across all recordings</div>
+    </div>
+    <div class="panel tile rise">
+      <div class="microlabel">Audio processed</div>
+      <div class="num" id="stat-minutes">—</div>
+      <div class="sub">minutes of hydrophone audio</div>
+    </div>
+    <div class="panel tile rise">
+      <div class="microlabel">Validation IER</div>
+      <div class="num" id="stat-f1">—</div>
+      <div class="sub" id="stat-f1-sub">identification error rate (synthetic val)</div>
+    </div>
+  </section>
+
+  <section class="panel rise" style="margin-bottom:26px;">
+    <div class="panel-head">
+      <h3>Recent analyses</h3>
+      <a class="plain" href="archive.html">VIEW ALL →</a>
+    </div>
+    <div class="panel-pad">
+      <div class="hscroll" id="recent"></div>
+    </div>
+  </section>
+
+  <section class="panel rise">
+    <div class="panel-head">
+      <h3>Detection pipeline</h3>
+      <span class="microlabel" id="pipe-status"><span class="led err"></span> INITIALIZING</span>
+    </div>
+    <div class="panel-pad">
+      <div class="pipeline">
+        <div class="node"><div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12M8 7v6M4 9v2M16 6v9M20 9v3"/></svg></div><span class="microlabel">Audio in</span></div>
+        <div class="link" style="--d:0s"></div>
+        <div class="node"><div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18c2-8 4-8 6 0s4 8 6 0 3-6 4-4"/></svg></div><span class="microlabel">PCEN</span></div>
+        <div class="link" style="--d:.5s"></div>
+        <div class="node"><div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M4 9h16M4 15h16M15 4v16"/></svg></div><span class="microlabel">CNN14</span></div>
+        <div class="link" style="--d:1s"></div>
+        <div class="node"><div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M7 12h13M10 18h10"/><circle cx="4.5" cy="12" r="1"/><circle cx="6.5" cy="18" r="1"/></svg></div><span class="microlabel">Events</span></div>
+        <div class="link" style="--d:1.5s"></div>
+        <div class="node"><div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4H6a2 2 0 00-2 2v3c0 1-.5 2-2 2 1.5 0 2 1 2 2v3a2 2 0 002 2h2M16 4h2a2 2 0 012 2v3c0 1 .5 2 2 2-1.5 0-2 1-2 2v3a2 2 0 01-2 2h-2"/></svg></div><span class="microlabel">JSON out</span></div>
+      </div>
+      <div class="grid2" style="margin-top:18px;">
+        <div>
+          <div class="microlabel" style="margin-bottom:10px;">Model</div>
+          <table class="data" id="model-table"><tbody></tbody></table>
+        </div>
+        <div>
+          <div class="microlabel" style="margin-bottom:10px;">Target classes · calibrated thresholds</div>
+          <div class="stack" id="class-list" style="gap:9px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/api.js"></script>
+<script>
+renderShell("overview");
+stagger();
+
+document.addEventListener("system", (e) => {
+  const sys = e.detail;
+  countUp(document.getElementById("stat-files"), sys.stats.files_analyzed);
+  countUp(document.getElementById("stat-events"), sys.stats.events_detected);
+  countUp(document.getElementById("stat-minutes"), sys.stats.audio_minutes, sys.stats.audio_minutes % 1 ? 1 : 0);
+  document.getElementById("stat-f1").textContent = "0.568";
+  document.getElementById("pipe-status").innerHTML =
+    `<span class="led ok"></span> ONLINE · ${sys.model.params_million}M PARAMS · CPU`;
+
+  const mt = document.querySelector("#model-table tbody");
+  const meta = sys.model;
+  mt.innerHTML = [
+    ["Architecture", "PANNs CNN14 + framewise SED head"],
+    ["Front-end", (meta.model_kwargs.frontend || "pcen").toUpperCase() + " (adaptive gain control)"],
+    ["Checkpoint", `${meta.weights_file} · epoch ${meta.epoch}`],
+    ["Val F1 (macro)", meta.val_f1_macro],
+    ["Execution", "Offline · CPU · streamed blocks"],
+  ].map(([k, v]) => `<tr><td class="faint" style="width:40%">${k}</td><td>${v}</td></tr>`).join("");
+
+  const cl = document.getElementById("class-list");
+  cl.innerHTML = sys.classes.map(c => {
+    const th = sys.thresholds[c.name];
+    return `<div class="spread">${chip(c.name)}
+      <span class="mono faint" style="font-size:11px">onset ${th.high.toFixed(2)} · sustain ${th.low.toFixed(2)}</span></div>`;
+  }).join("");
+});
+
+api("/api/jobs").then(jobs => {
+  const done = jobs.filter(j => j.status === "done").slice(0, 8);
+  const el = document.getElementById("recent");
+  if (!done.length) {
+    el.innerHTML = `<div class="empty" style="width:100%">No analyses yet — start one from the Analyze console.</div>`;
+    return;
+  }
+  el.innerHTML = done.map(j => `
+    <a class="panel filecard" href="results.html?job=${j.id}">
+      <div class="spread" style="margin-bottom:8px;">
+        <span class="mono" style="font-size:12.5px; overflow:hidden; text-overflow:ellipsis; max-width:190px;">${j.original_name}</span>
+        <span class="mono faint" style="font-size:10.5px">${fmtTime(j.duration)}</span>
+      </div>
+      <div class="row" style="flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+        ${Object.entries(j.class_counts).map(([c, n]) => chip(c, ` (${n})`)).join("") || '<span class="faint mono" style="font-size:10.5px">no events</span>'}
+      </div>
+      <div class="mono faint" style="font-size:10px">${fmtDate(j.created)}</div>
+    </a>`).join("");
+});
+</script>
+</body>
+</html>

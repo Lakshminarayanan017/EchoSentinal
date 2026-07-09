@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>echoSentinel — Analyze</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/console.css"/>
+</head>
+<body>
+<main class="main">
+  <div class="page-title rise">Acoustic analysis <b>// ingest</b></div>
+
+  <div class="grid2" style="align-items:start;">
+    <div class="stack">
+      <section class="panel rise" style="padding:10px 0 26px;">
+        <div class="dropzone" id="dropzone" title="Drop recordings or click to browse">
+          <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+            <path d="M12 3v12M8 7v6M4 9v2M16 6v9M20 9v3"/><path d="M12 21v-3" stroke-dasharray="2 2"/>
+          </svg>
+          <h2 style="font:600 19px var(--font-ui);">Drop hydrophone recordings</h2>
+          <p class="mono faint" style="font-size:11px;">.wav · .mp3 · .flac · any rate / bit depth · 250 MB+</p>
+          <span class="btn" style="margin-top:12px;">Browse files</span>
+        </div>
+        <input type="file" id="fileinput" accept=".wav,.mp3,.flac,.ogg" multiple style="display:none;"/>
+        <p class="mono faint" style="text-align:center; font-size:10.5px; letter-spacing:.08em;" id="upload-msg"></p>
+      </section>
+
+      <section class="panel rise">
+        <div class="panel-head">
+          <h3>Analysis queue</h3>
+          <span class="microlabel" id="queue-count"></span>
+        </div>
+        <div id="queue" class="stack" style="padding:16px 20px; gap:12px;"></div>
+      </section>
+    </div>
+
+    <aside class="panel rise panel-pad stack" style="gap:22px;">
+      <div>
+        <div class="microlabel" style="margin-bottom:6px;">Detection engine</div>
+        <div class="mono" style="font-size:12.5px;" id="engine-name">—</div>
+        <div class="mono faint" style="font-size:10.5px; margin-top:4px;" id="engine-sub"></div>
+      </div>
+
+      <div class="stack" style="gap:16px;" id="sliders">
+        <div class="spread">
+          <span class="microlabel">Class sensitivity</span>
+          <button class="iconbtn" id="reset-sens" title="Reset to calibrated">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 109-9 9.5 9.5 0 00-6.7 2.8L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-solid" style="border:1px solid var(--line); border-radius:8px; padding:14px;">
+        <div class="spread">
+          <div>
+            <div style="font:600 13px var(--font-ui);">Recall-biased calibration</div>
+            <div class="mono" style="font-size:9.5px; letter-spacing:.14em; color:var(--c-other_anthropogenic); margin-top:4px;">DEFENCE DEFAULT</div>
+          </div>
+          <span class="mono faint" style="font-size:10px;" id="sens-state">CALIBRATED</span>
+        </div>
+        <p class="mono faint" style="font-size:10.5px; line-height:1.7; margin-top:10px;">
+          Thresholds are calibrated so a missed contact costs 4× a false alarm
+          (PS-12 identification error rate). Raise a class's sensitivity to catch
+          fainter events at the price of more false alarms; changes apply to the
+          next upload.
+        </p>
+      </div>
+
+      <div>
+        <div class="microlabel" style="margin-bottom:8px;">Output</div>
+        <p class="mono faint" style="font-size:10.5px; line-height:1.7;">
+          PS-12 JSON (categories + timestamped annotations, integer seconds,
+          non-overlapping events) with waveform and spectrogram renders per file.
+        </p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script src="assets/api.js"></script>
+<script>
+renderShell("analyze");
+stagger();
+
+/* ---------- sensitivity sliders (real: scales calibrated thresholds) ---------- */
+let baseThresholds = null;
+const sens = JSON.parse(localStorage.getItem("sensitivity") || "{}");
+
+document.addEventListener("system", (e) => {
+  const sys = e.detail;
+  baseThresholds = sys.thresholds;
+  document.getElementById("engine-name").textContent =
+    `PANNs CNN14 + ${(sys.model.model_kwargs.frontend || "pcen").toUpperCase()}`;
+  document.getElementById("engine-sub").textContent =
+    `${sys.model.weights_file} · epoch ${sys.model.epoch} · ${sys.model.params_million}M params · CPU`;
+  buildSliders(sys.classes);
+});
+
+function effective(cls) {
+  const k = sens[cls] ?? 1.0;
+  const th = baseThresholds[cls];
+  return { high: Math.min(Math.max(th.high / k, 0.01), 0.99),
+           low: Math.min(Math.max(th.low / k, 0.005), 0.95) };
+}
+
+function buildSliders(classes) {
+  const host = document.getElementById("sliders");
+  host.querySelectorAll(".sl").forEach(el => el.remove());
+  classes.forEach(c => {
+    const k = sens[c.name] ?? 1.0;
+    const row = document.createElement("div");
+    row.className = "sl";
+    row.innerHTML = `
+      <div class="spread" style="margin-bottom:7px;">
+        ${chip(c.name)}
+        <span class="mono faint" style="font-size:10.5px;" id="sv-${c.name}"></span>
+      </div>
+      <input type="range" min="50" max="200" value="${Math.round(k * 100)}" data-class="${c.name}"/>`;
+    host.appendChild(row);
+    row.querySelector("input").addEventListener("input", (ev) => {
+      sens[c.name] = ev.target.value / 100;
+      localStorage.setItem("sensitivity", JSON.stringify(sens));
+      updateSliderLabels();
+    });
+  });
+  updateSliderLabels();
+}
+
+function updateSliderLabels() {
+  if (!baseThresholds) return;
+  let calibrated = true;
+  Object.keys(baseThresholds).forEach(cls => {
+    const el = document.getElementById("sv-" + cls);
+    if (!el) return;
+    const k = sens[cls] ?? 1.0;
+    const th = effective(cls);
+    el.textContent = `${k.toFixed(2)}× · onset ${th.high.toFixed(2)}`;
+    if (Math.abs(k - 1.0) > 0.005) calibrated = false;
+  });
+  document.getElementById("sens-state").textContent = calibrated ? "CALIBRATED" : "CUSTOM";
+}
+
+document.getElementById("reset-sens").addEventListener("click", () => {
+  Object.keys(sens).forEach(k => delete sens[k]);
+  localStorage.removeItem("sensitivity");
+  document.querySelectorAll("#sliders input[type=range]").forEach(i => (i.value = 100));
+  updateSliderLabels();
+});
+
+/* ---------- upload ---------- */
+const dz = document.getElementById("dropzone");
+const fi = document.getElementById("fileinput");
+dz.addEventListener("click", () => fi.click());
+["dragenter", "dragover"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add("drag"); }));
+["dragleave", "drop"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove("drag"); }));
+dz.addEventListener("drop", e => upload([...e.dataTransfer.files]));
+fi.addEventListener("change", () => { upload([...fi.files]); fi.value = ""; });
+
+async function upload(files) {
+  const msg = document.getElementById("upload-msg");
+  // Send sensitivity as multipliers applied server-side to the calibrated thresholds.
+  const mult = {};
+  Object.entries(sens).forEach(([c, k]) => { if (Math.abs(k - 1) > 0.005) mult[c] = 1 / k; });
+  for (const f of files) {
+    if (!/\.(wav|mp3|flac|ogg)$/i.test(f.name)) { msg.textContent = `${f.name}: unsupported type`; continue; }
+    msg.textContent = `Uploading ${f.name}…`;
+    const form = new FormData();
+    form.append("file", f);
+    form.append("sensitivity", JSON.stringify(mult));
+    try {
+      await api("/api/jobs", { method: "POST", body: form });
+      msg.textContent = `${f.name} queued.`;
+    } catch (err) {
+      msg.textContent = `${f.name}: ${err.message}`;
+    }
+  }
+  refresh();
+}
+
+/* ---------- live queue ---------- */
+const STAGE_TEXT = {
+  queued: "Queued", decoding: "Decoding header…",
+  detecting: "Streaming blocks · detecting…", rendering: "Rendering waveform + spectrogram…",
+  done: "Analysis complete", error: "Failed",
+};
+
+async function refresh() {
+  let jobs;
+  try { jobs = await api("/api/jobs"); } catch { return; }
+  const active = jobs.filter(j => j.status === "queued" || j.status === "running").length;
+  const doneN = jobs.filter(j => j.status === "done").length;
+  document.getElementById("queue-count").textContent = `${active} ACTIVE · ${doneN} COMPLETE`;
+
+  const host = document.getElementById("queue");
+  const shown = jobs.slice(0, 12);
+  if (!shown.length) { host.innerHTML = `<div class="empty">Queue is empty.</div>`; return; }
+
+  host.innerHTML = shown.map(j => {
+    const head = `
+      <div class="spread">
+        <div class="row" style="gap:10px; min-width:0;">
+          ${j.status === "done"
+            ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>`
+            : j.status === "error"
+            ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>`
+            : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" style="animation:led 1.6s ease-in-out infinite"><path d="M12 3v12M8 7v6M4 9v2M16 6v9M20 9v3"/></svg>`}
+          <div style="min-width:0;">
+            <div class="mono" style="font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${j.original_name}</div>
+            <div class="mono faint" style="font-size:10px; margin-top:3px;">
+              ${j.duration ? fmtTime(j.duration) + " · " + fmtKHz(j.sample_rate) + " · " : ""}${STAGE_TEXT[j.stage] || j.stage}
+            </div>
+          </div>
+        </div>
+        <div class="row" style="gap:8px; flex-shrink:0;">
+          ${j.status === "done" ? `<a class="btn ghost" style="padding:6px 12px; font-size:10px;" href="results.html?job=${j.id}">Open results</a>` : ""}
+          ${j.status === "running" ? `<span class="mono" style="font-size:11px; color:var(--cyan);">${Math.round(j.progress * 100)}%</span>` : ""}
+          ${j.status !== "running" ? `<button class="iconbtn danger" data-del="${j.id}" title="Remove">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>
+            </button>` : ""}
+        </div>
+      </div>`;
+    const body =
+      j.status === "running"
+        ? `<div class="progress scan" style="margin-top:12px;"><i style="width:${Math.max(j.progress * 100, 2)}%"></i></div>`
+        : j.status === "done"
+        ? `<div class="row" style="flex-wrap:wrap; gap:6px; margin-top:12px;">
+             ${Object.entries(j.class_counts).map(([c, n]) => chip(c, ` (${n})`)).join("") || '<span class="faint mono" style="font-size:10.5px">no events detected</span>'}
+           </div>`
+        : j.status === "error"
+        ? `<div class="mono" style="font-size:10.5px; color:var(--red); margin-top:10px;">${j.error}</div>`
+        : "";
+    return `<div class="panel" style="padding:14px 16px; background:var(--panel-high);">${head}${body}</div>`;
+  }).join("");
+
+  host.querySelectorAll("[data-del]").forEach(b =>
+    b.addEventListener("click", async () => {
+      try { await api("/api/jobs/" + b.dataset.del, { method: "DELETE" }); } catch {}
+      refresh();
+    })
+  );
+}
+
+refresh();
+setInterval(refresh, 1500);
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>echoSentinel — Mission Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/console.css"/>
+</head>
+<body>
+<main class="main">
+  <div class="page-title rise">Mission archive <b>// all analyses</b></div>
+
+  <section class="panel rise">
+    <div class="panel-head">
+      <h3 id="arch-count">—</h3>
+      <div class="row">
+        <input type="text" id="search" placeholder="filter by filename…" style="width:240px;"/>
+        <a class="btn" href="analyze.html" style="padding:8px 14px;">+ New analysis</a>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data">
+        <thead><tr>
+          <th>Recording</th><th>Analyzed (UTC)</th><th>Duration</th><th>Source</th>
+          <th>Events</th><th>Detections</th><th>Status</th><th style="text-align:right;">Actions</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="assets/api.js"></script>
+<script>
+renderShell("archive");
+stagger();
+
+let ALL = [];
+
+async function refresh() {
+  try { ALL = await api("/api/jobs"); } catch { return; }
+  render();
+}
+
+function render() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const jobs = ALL.filter(j => !q || j.original_name.toLowerCase().includes(q));
+  document.getElementById("arch-count").textContent =
+    `${jobs.length} RECORD${jobs.length === 1 ? "" : "S"}`;
+  const tbody = document.getElementById("rows");
+  if (!jobs.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">${q ? "No matches." : "Archive is empty — analyze a recording first."}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = jobs.map(j => {
+    const status =
+      j.status === "done" ? `<span class="mono" style="color:var(--ok); font-size:10.5px;">● COMPLETE</span>` :
+      j.status === "error" ? `<span class="mono" style="color:var(--red); font-size:10.5px;" title="${j.error}">● FAILED</span>` :
+      `<span class="mono" style="color:var(--cyan); font-size:10.5px;">● ${j.status === "running" ? Math.round(j.progress * 100) + "%" : "QUEUED"}</span>`;
+    return `<tr ${j.status === "done" ? `style="cursor:pointer" data-open="${j.id}"` : ""}>
+      <td class="mono" style="max-width:260px; overflow:hidden; text-overflow:ellipsis;">${j.original_name}</td>
+      <td class="dim">${fmtDate(j.created)}</td>
+      <td>${j.duration ? fmtTime(j.duration) : "—"}</td>
+      <td class="dim">${fmtKHz(j.sample_rate)}</td>
+      <td>${j.status === "done" ? j.n_events : "—"}</td>
+      <td>${Object.entries(j.class_counts || {}).map(([c, n]) => chip(c, ` (${n})`)).join(" ") || '<span class="faint">—</span>'}</td>
+      <td>${status}</td>
+      <td style="text-align:right; white-space:nowrap;">
+        ${j.status === "done" ? `
+          <a class="iconbtn" href="results.html?job=${j.id}" title="Open results" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12h3l2-6 4 12 3-9 2 3h6"/></svg></a>
+          <a class="iconbtn" href="/api/jobs/${j.id}/export" download title="Export JSON" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg></a>` : ""}
+        ${j.status !== "running" ? `
+          <button class="iconbtn danger" data-del="${j.id}" title="Delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>` : ""}
+      </td>
+    </tr>`;
+  }).join("");
+
+  tbody.querySelectorAll("tr[data-open]").forEach(tr =>
+    tr.addEventListener("click", () => (location.href = "results.html?job=" + tr.dataset.open)));
+  tbody.querySelectorAll("[data-del]").forEach(b =>
+    b.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      try { await api("/api/jobs/" + b.dataset.del, { method: "DELETE" }); } catch {}
+      refresh();
+    }));
+}
+
+document.getElementById("search").addEventListener("input", render);
+refresh();
+setInterval(refresh, 4000);
+</script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>echoSentinel — Analysis Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/console.css"/>
+</head>
+<body>
+<main class="main" style="padding-bottom:120px;">
+  <section class="spread rise" style="margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+    <div class="row panel" style="padding:9px 16px; gap:14px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.6"><path d="M12 3v12M8 7v6M4 9v2M16 6v9M20 9v3"/></svg>
+      <span class="mono" style="font-size:13px;" id="meta-name">—</span>
+      <span class="faint">|</span><span class="mono dim" style="font-size:12px;" id="meta-dur">—</span>
+      <span class="faint">|</span><span class="mono dim" style="font-size:12px;" id="meta-sr">—</span>
+      <span class="faint">|</span><span class="mono dim" style="font-size:12px;" id="meta-count">—</span>
+    </div>
+    <div class="row">
+      <a class="btn ghost" href="analyze.html">← Analyze</a>
+      <a class="btn" id="btn-export" href="#" download>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
+        Export JSON
+      </a>
+    </div>
+  </section>
+
+  <section class="panel rise" style="margin-bottom:20px; overflow:hidden;">
+    <div class="panel-head" style="padding:10px 16px;">
+      <h3>Acoustic signature timeline</h3>
+      <div class="row" style="gap:6px;">
+        <span class="mono faint" style="font-size:10px;" id="zoom-label">1×</span>
+        <button class="iconbtn" id="zoom-out" title="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M8 11h6"/></svg></button>
+        <button class="iconbtn" id="zoom-in" title="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M8 11h6M11 8v6"/></svg></button>
+      </div>
+    </div>
+    <div class="timeline-wrap" id="tl-wrap">
+      <div class="timeline" id="timeline" style="cursor:crosshair;">
+        <div class="lane wave"><canvas id="wave"></canvas></div>
+        <div class="lane spec"><img id="spec" alt="spectrogram"/></div>
+        <div id="events-layer"></div>
+        <div class="playhead" id="playhead" style="left:0;"></div>
+      </div>
+    </div>
+    <div class="ruler" id="ruler"></div>
+  </section>
+
+  <section class="grid2" style="align-items:start;">
+    <div class="panel rise">
+      <div class="panel-head">
+        <h3>Detected events</h3>
+        <select id="class-filter" style="padding:5px 10px; font-size:10.5px;">
+          <option value="">ALL CLASSES</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data" id="events-table">
+          <thead><tr><th>#</th><th>Class</th><th>Start</th><th>End</th><th>Dur</th><th>Confidence</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="panel rise panel-pad">
+        <div class="microlabel" style="margin-bottom:14px;">Class distribution</div>
+        <div class="row" style="gap:22px;">
+          <svg id="donut" width="120" height="120" viewBox="0 0 100 100" style="transform:rotate(-90deg); flex-shrink:0;"></svg>
+          <div class="stack" style="gap:8px;" id="donut-legend"></div>
+        </div>
+      </div>
+      <div class="panel rise panel-pad">
+        <div class="microlabel" style="margin-bottom:12px;">Event confidence over time</div>
+        <svg id="confchart" width="100%" height="110" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="panel rise panel-pad">
+        <div class="microlabel" style="margin-bottom:12px;">Coverage</div>
+        <table class="data"><tbody id="coverage"></tbody></table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="player">
+  <div class="controls">
+    <button class="iconbtn" id="prev-ev" title="Previous event"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 5v14L9 12l9-7zM6 5v14"/></svg></button>
+    <button class="playbtn" id="play" title="Play/Pause">
+      <svg id="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>
+      <svg id="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+    </button>
+    <button class="iconbtn" id="next-ev" title="Next event"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 5v14l9-7-9-7zM18 5v14"/></svg></button>
+    <button class="iconbtn" id="mute" title="Mute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="vol-waves" d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg></button>
+  </div>
+  <div style="text-align:center;">
+    <div class="time"><span id="t-cur">00:00</span> <span>/</span> <span id="t-total" style="color:var(--text-dim);">00:00</span></div>
+    <div class="mono" style="font-size:9px; letter-spacing:.2em; color:var(--text-faint); margin-top:2px;" id="tracking">READY</div>
+  </div>
+  <div class="eq" id="eq"></div>
+</footer>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script src="assets/api.js"></script>
+<script>
+renderShell(null);
+stagger();
+
+const jobId = new URLSearchParams(location.search).get("job");
+if (!jobId) location.href = "archive.html";
+
+const audio = document.getElementById("audio");
+audio.src = `/api/jobs/${jobId}/audio`;
+document.getElementById("btn-export").href = `/api/jobs/${jobId}/export`;
+document.getElementById("spec").src = `/api/jobs/${jobId}/spectrogram.png`;
+
+let DUR = 0, EVENTS = [], zoom = 1, selected = -1;
+
+Promise.all([
+  api(`/api/jobs/${jobId}`),
+  api(`/api/jobs/${jobId}/results`),
+  api(`/api/jobs/${jobId}/peaks`),
+]).then(([job, results, peaks]) => {
+  DUR = peaks.duration;
+  document.getElementById("meta-name").textContent = job.original_name;
+  document.getElementById("meta-dur").textContent = fmtTime(DUR);
+  document.getElementById("meta-sr").textContent = fmtKHz(job.sample_rate) + " source";
+  document.getElementById("t-total").textContent = fmtTime(DUR);
+
+  EVENTS = results.annotations.map(a => ({
+    id: a.id, cls: CLASS_BY_ID[a.category_id], start: a.start_time,
+    end: a.end_time, dur: a.duration, score: a.score,
+  }));
+  document.getElementById("meta-count").textContent = EVENTS.length + " events";
+
+  drawWave(peaks);
+  drawEvents();
+  drawRuler();
+  buildTable();
+  buildDonut();
+  buildConfChart();
+  buildCoverage();
+}).catch(err => {
+  document.querySelector(".main").insertAdjacentHTML("afterbegin",
+    `<div class="panel panel-pad" style="border-color:rgba(255,77,94,.4); color:var(--red);" >Failed to load job: ${err.message}</div>`);
+});
+
+/* ---------- waveform ---------- */
+function drawWave(peaks) {
+  const canvas = document.getElementById("wave");
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * devicePixelRatio;
+  canvas.height = rect.height * devicePixelRatio;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height, mid = H / 2;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(0, 219, 233, 0.55)";
+  const n = peaks.columns;
+  const colW = W / n;
+  for (let i = 0; i < n; i++) {
+    const y1 = mid + peaks.min[i] * mid * 0.92;
+    const y2 = mid + peaks.max[i] * mid * 0.92;
+    ctx.fillRect(i * colW, Math.min(y1, y2), Math.max(colW - 0.5, 0.5), Math.max(Math.abs(y2 - y1), 1));
+  }
+  ctx.fillStyle = "rgba(0, 240, 255, 0.25)";
+  ctx.fillRect(0, mid, W, 1);
+}
+
+/* ---------- events overlay ---------- */
+function drawEvents() {
+  const layer = document.getElementById("events-layer");
+  layer.innerHTML = EVENTS.map((e, i) => {
+    const color = CLASSES[e.cls].color;
+    return `<div class="ev" data-i="${i}"
+      style="left:${(e.start / DUR) * 100}%; width:${Math.max(((e.end - e.start) / DUR) * 100, 0.15)}%;
+             background:${color}1a; border-color:${color}80;">
+      <div class="tip">
+        <div class="row" style="gap:6px; margin-bottom:4px;"><i style="width:6px;height:6px;border-radius:50%;background:${color};box-shadow:0 0 6px ${color}"></i>
+          <b style="color:${color}; letter-spacing:.12em;">${CLASSES[e.cls].label}</b></div>
+        <div class="dim">T ${fmtTime(e.start)} – ${fmtTime(e.end)}</div>
+        <div style="color:var(--cyan); margin-top:2px;">CONF ${(e.score * 100).toFixed(1)}%</div>
+      </div>
+    </div>`;
+  }).join("");
+  layer.querySelectorAll(".ev").forEach(el => {
+    el.addEventListener("click", (ev) => { ev.stopPropagation(); selectEvent(+el.dataset.i, true); });
+  });
+}
+
+/* ---------- ruler / zoom / seek ---------- */
+function drawRuler() {
+  const n = 7;
+  document.getElementById("ruler").innerHTML =
+    Array.from({ length: n }, (_, i) => `<span>${fmtTime((DUR * i) / (n - 1))}</span>`).join("");
+}
+function applyZoom() {
+  document.getElementById("timeline").style.width = (zoom * 100) + "%";
+  document.getElementById("zoom-label").textContent = zoom + "×";
+  Promise.resolve().then(() => api(`/api/jobs/${jobId}/peaks`).then(drawWave));
+}
+document.getElementById("zoom-in").addEventListener("click", () => { zoom = Math.min(zoom * 2, 16); applyZoom(); });
+document.getElementById("zoom-out").addEventListener("click", () => { zoom = Math.max(zoom / 2, 1); applyZoom(); });
+
+document.getElementById("timeline").addEventListener("click", (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const frac = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = frac * DUR;
+});
+
+/* ---------- table ---------- */
+function buildTable(filter = "") {
+  const tbody = document.querySelector("#events-table tbody");
+  const rows = EVENTS.map((e, i) => ({ e, i })).filter(({ e }) => !filter || e.cls === filter);
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty">No events${filter ? " for this class" : " detected"}.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(({ e, i }) => `
+    <tr data-i="${i}" id="row-${i}">
+      <td class="faint">EVT-${String(e.id).padStart(3, "0")}</td>
+      <td>${chip(e.cls)}</td>
+      <td>${fmtTime(e.start)}</td><td>${fmtTime(e.end)}</td><td class="dim">${fmtTime(e.dur)}</td>
+      <td><span>${(e.score * 100).toFixed(1)}%</span><span class="confbar"><i style="width:${e.score * 100}%; background:${CLASSES[e.cls].color};"></i></span></td>
+      <td><button class="iconbtn" data-play="${i}" title="Play event">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button></td>
+    </tr>`).join("");
+  tbody.querySelectorAll("tr[data-i]").forEach(tr =>
+    tr.addEventListener("click", () => selectEvent(+tr.dataset.i, false)));
+  tbody.querySelectorAll("[data-play]").forEach(b =>
+    b.addEventListener("click", (ev) => { ev.stopPropagation(); selectEvent(+b.dataset.play, true); }));
+}
+
+const filterSel = document.getElementById("class-filter");
+Object.entries(CLASSES).forEach(([k, v]) => filterSel.insertAdjacentHTML("beforeend", `<option value="${k}">${v.label}</option>`));
+filterSel.addEventListener("change", () => buildTable(filterSel.value));
+
+function selectEvent(i, play) {
+  selected = i;
+  const e = EVENTS[i];
+  document.querySelectorAll("#events-table tr.selected, .ev.selected").forEach(el => el.classList.remove("selected"));
+  document.getElementById("row-" + i)?.classList.add("selected");
+  document.querySelector(`.ev[data-i="${i}"]`)?.classList.add("selected");
+  document.getElementById("tracking").textContent = "TRACKING: " + CLASSES[e.cls].label;
+  audio.currentTime = e.start;
+  if (play) audio.play();
+  document.getElementById("row-" + i)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+/* ---------- analytics ---------- */
+function buildDonut() {
+  const svg = document.getElementById("donut");
+  const legend = document.getElementById("donut-legend");
+  const counts = {};
+  EVENTS.forEach(e => (counts[e.cls] = (counts[e.cls] || 0) + 1));
+  const total = EVENTS.length || 1;
+  const C = 2 * Math.PI * 40;
+  let offset = 0;
+  svg.innerHTML = `<circle cx="50" cy="50" r="40" fill="none" stroke="rgba(126,147,155,.15)" stroke-width="11"/>`;
+  legend.innerHTML = "";
+  Object.entries(counts).forEach(([cls, n]) => {
+    const frac = n / total;
+    svg.innerHTML += `<circle cx="50" cy="50" r="40" fill="none" stroke="${CLASSES[cls].color}"
+      stroke-width="11" stroke-dasharray="${frac * C} ${C}" stroke-dashoffset="${-offset * C}"
+      style="filter:drop-shadow(0 0 4px ${CLASSES[cls].color}66)"/>`;
+    offset += frac;
+    legend.innerHTML += `<div class="row" style="gap:8px;">${chip(cls)}<span class="mono faint" style="font-size:11px;">${n} · ${(frac * 100).toFixed(0)}%</span></div>`;
+  });
+  svg.innerHTML += `<text x="50" y="46" transform="rotate(90 50 50)" text-anchor="middle" fill="var(--cyan)" font-family="IBM Plex Mono" font-size="15" font-weight="600">${EVENTS.length}</text>
+    <text x="50" y="60" transform="rotate(90 50 50)" text-anchor="middle" fill="var(--text-faint)" font-family="IBM Plex Mono" font-size="6.5" letter-spacing="1.5">EVENTS</text>`;
+}
+
+function buildConfChart() {
+  const svg = document.getElementById("confchart");
+  if (!EVENTS.length) { svg.outerHTML = `<div class="empty">no events</div>`; return; }
+  const W = 100, H = 100;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const pts = EVENTS.map(e => [ (e.start / DUR) * W, H - e.score * (H - 12) - 6 ]);
+  const line = pts.map(p => p.map(v => v.toFixed(1)).join(",")).join(" ");
+  svg.innerHTML = `
+    <polyline points="0,${H} ${line} ${W},${H}" fill="rgba(0,240,255,.08)" stroke="none"/>
+    <polyline points="${line}" fill="none" stroke="var(--cyan)" stroke-width="1.2"
+      style="filter:drop-shadow(0 0 3px rgba(0,240,255,.7))"/>
+    ${EVENTS.map((e, i) => `<circle cx="${pts[i][0].toFixed(1)}" cy="${pts[i][1].toFixed(1)}" r="1.8" fill="${CLASSES[e.cls].color}"/>`).join("")}`;
+}
+
+function buildCoverage() {
+  const covered = EVENTS.reduce((s, e) => s + (e.end - e.start), 0);
+  const mean = EVENTS.length ? EVENTS.reduce((s, e) => s + e.score, 0) / EVENTS.length : 0;
+  document.getElementById("coverage").innerHTML = [
+    ["Event audio", `${fmtTime(covered)} (${((covered / DUR) * 100).toFixed(1)}%)`],
+    ["Background", `${fmtTime(DUR - covered)}`],
+    ["Mean confidence", `${(mean * 100).toFixed(1)}%`],
+  ].map(([k, v]) => `<tr><td class="faint">${k}</td><td style="text-align:right">${v}</td></tr>`).join("");
+}
+
+/* ---------- player ---------- */
+const btnPlay = document.getElementById("play");
+const icPlay = document.getElementById("ic-play"), icPause = document.getElementById("ic-pause");
+btnPlay.addEventListener("click", () => (audio.paused ? audio.play() : audio.pause()));
+audio.addEventListener("play", () => { icPlay.style.display = "none"; icPause.style.display = ""; startEQ(); });
+audio.addEventListener("pause", () => { icPlay.style.display = ""; icPause.style.display = "none"; });
+document.getElementById("mute").addEventListener("click", () => {
+  audio.muted = !audio.muted;
+  document.getElementById("vol-waves").style.opacity = audio.muted ? 0.15 : 1;
+});
+document.getElementById("prev-ev").addEventListener("click", () => {
+  if (!EVENTS.length) return;
+  const before = EVENTS.map((e, i) => ({ e, i })).filter(x => x.e.start < audio.currentTime - 0.5);
+  selectEvent(before.length ? before[before.length - 1].i : 0, !audio.paused);
+});
+document.getElementById("next-ev").addEventListener("click", () => {
+  if (!EVENTS.length) return;
+  const after = EVENTS.findIndex(e => e.start > audio.currentTime + 0.5);
+  selectEvent(after === -1 ? EVENTS.length - 1 : after, !audio.paused);
+});
+
+function tick() {
+  if (DUR > 0) {
+    document.getElementById("playhead").style.left = (audio.currentTime / DUR) * 100 + "%";
+    document.getElementById("t-cur").textContent = fmtTime(audio.currentTime);
+    const cur = EVENTS.findIndex(e => audio.currentTime >= e.start && audio.currentTime < e.end);
+    if (cur !== -1 && cur !== selected && !audio.paused) {
+      document.getElementById("tracking").textContent = "TRACKING: " + CLASSES[EVENTS[cur].cls].label;
+    } else if (cur === -1 && !audio.paused) {
+      document.getElementById("tracking").textContent = "BACKGROUND";
+    }
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* real EQ visualizer via WebAudio */
+const eqHost = document.getElementById("eq");
+for (let i = 0; i < 14; i++) eqHost.appendChild(document.createElement("i"));
+let analyser = null;
+function startEQ() {
+  if (analyser) return;
+  try {
+    const ctx = new AudioContext();
+    const src = ctx.createMediaElementSource(audio);
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 64;
+    src.connect(analyser); analyser.connect(ctx.destination);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    const bars = eqHost.querySelectorAll("i");
+    (function loop() {
+      analyser.getByteFrequencyData(data);
+      bars.forEach((b, i) => { b.style.height = Math.max((data[i + 2] / 255) * 26, 2) + "px"; });
+      requestAnimationFrame(loop);
+    })();
+  } catch (_) {}
+}
+</script>
+</body>
+</html>

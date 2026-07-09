@@ -45,6 +45,22 @@ pytest
 
 Class-4 training data is user-supplied — see [docs/class4_sources.md](docs/class4_sources.md).
 
+## Web console
+
+A full operational console (upload → live analysis queue → interactive results
+timeline with real waveform/spectrogram → mission archive), served locally:
+
+```powershell
+cd echosentinel_v2
+.venv\Scripts\Activate.ps1
+python -m echosentinel.server        # → http://127.0.0.1:8710
+```
+
+Everything in the UI is backed by the real pipeline: per-class sensitivity
+sliders scale the calibrated thresholds for the next upload, Export JSON
+downloads the PS-12 results file, and the audio player is synchronized with
+the detected-event timeline.
+
 ## Docker (offline inference package)
 
 With trained weights at `weights/panns_pcen.pt` (and Docker Desktop installed):
