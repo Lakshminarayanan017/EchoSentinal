@@ -154,8 +154,8 @@ def main() -> None:
     import uvicorn
 
     # Local default binds loopback only; containers set HOST=0.0.0.0.
-    host = os.environ.get("ECHOSENTINEL_HOST", "127.0.0.1")
-    port = int(os.environ.get("ECHOSENTINEL_PORT", "8710"))
+    host = os.environ.get("ECHOSENTINEL_HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", os.environ.get("ECHOSENTINEL_PORT", "8080")))
     uvicorn.run(create_app(), host=host, port=port, log_level="info")
 
 

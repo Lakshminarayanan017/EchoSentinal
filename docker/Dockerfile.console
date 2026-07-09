@@ -30,7 +30,7 @@ COPY weights/panns_pcen.pt ./weights/panns_pcen.pt
 RUN pip install --no-cache-dir --no-deps -e .
 
 ENV ECHOSENTINEL_HOST=0.0.0.0
-ENV ECHOSENTINEL_PORT=8710
-EXPOSE 8710
+ENV ECHOSENTINEL_PORT=8080
+EXPOSE 8080
 
 ENTRYPOINT ["python", "-m", "echosentinel.server"]
