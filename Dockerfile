@@ -26,8 +26,11 @@ COPY pyproject.toml README.md ./
 COPY src ./src
 COPY configs ./configs
 COPY predict.py ./
-COPY weights/panns_pcen.pt ./weights/panns_pcen.pt
-RUN pip install --no-cache-dir --no-deps -e .
+RUN pip install --no-cache-dir gdown
+RUN mkdir -p weights
+
+RUN gdown "https://drive.google.com/file/d/19IU8-RbiKg4C-yBqHY_wGhA-UVn_Pm7B/view?usp=sharing" \
+    -O weights/panns_pcen.pt
 
 ENTRYPOINT ["python", "predict.py", \
             "--input_dir", "/data/in", \
