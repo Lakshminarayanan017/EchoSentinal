@@ -23,7 +23,7 @@ RUN gdown "https://drive.google.com/uc?id=19IU8-RbiKg4C-yBqHY_wGhA-UVn_Pm7B" \
     -O weights/panns_pcen.pt
 
 RUN pip install --no-cache-dir .
-
+ENV ECHOSENTINEL_ROOT=/app
 ENV ECHOSENTINEL_HOST=0.0.0.0
 ENV ECHOSENTINEL_PORT=8080
 

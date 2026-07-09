@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict
 from pathlib import Path
+import os
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
@@ -20,7 +21,7 @@ from echosentinel import __version__
 from echosentinel.constants import CLASS_MAP
 from echosentinel.server.jobs import JobManager
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PROJECT_ROOT = Path(os.environ.get("ECHOSENTINEL_ROOT", "/app"))
 WEB_DIR = PROJECT_ROOT / "web"
 
 ALLOWED_SUFFIXES = {".wav", ".mp3", ".flac", ".ogg"}
