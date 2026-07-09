@@ -1,0 +1,36 @@
+# echoSentinel web console — full operational UI + analysis API in one image.
+#
+# Build (from the repo root; weights/panns_pcen.pt must exist):
+#   docker build -f docker/Dockerfile.console -t echosentinel-console .
+#
+# Run (offline; console at http://localhost:8710, analyses persist in a volume):
+#   docker run --rm --network none -p 8710:8710 \
+#     -v echosentinel_data:/app/out/webapp echosentinel-console
+#
+# Note: --network none blocks the published port on some Docker setups; for a
+# LAN deployment use the default network and rely on the host firewall instead.
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+        torch torchaudio && \
+    pip install --no-cache-dir \
+        "numpy>=1.24,<2.1" "pandas>=2.0,<2.4" "scipy>=1.10" \
+        librosa soundfile soxr omegaconf tqdm "pyannote.metrics>=3.2" \
+        fastapi "uvicorn>=0.29" python-multipart pillow
+
+COPY pyproject.toml README.md ./
+COPY src ./src
+COPY configs ./configs
+COPY web ./web
+COPY predict.py ./
+COPY weights/panns_pcen.pt ./weights/panns_pcen.pt
+RUN pip install --no-cache-dir --no-deps -e .
+
+ENV ECHOSENTINEL_HOST=0.0.0.0
+ENV ECHOSENTINEL_PORT=8710
+EXPOSE 8710
+
+ENTRYPOINT ["python", "-m", "echosentinel.server"]

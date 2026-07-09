@@ -45,6 +45,11 @@ pytest
 
 Class-4 training data is user-supplied — see [docs/class4_sources.md](docs/class4_sources.md).
 
+**Model weights are not in git** (292 MB, and thresholds are calibrated per
+checkpoint). Obtain `weights/panns_pcen.pt` either by copying it from an
+existing installation or by training via `notebooks/train_colab.ipynb`, then
+run `python scripts/07_recalibrate.py` once.
+
 ## Web console
 
 A full operational console (upload → live analysis queue → interactive results
@@ -61,18 +66,23 @@ sliders scale the calibrated thresholds for the next upload, Export JSON
 downloads the PS-12 results file, and the audio player is synchronized with
 the detected-event timeline.
 
-## Docker (offline inference package)
+## Docker (deployment)
 
-With trained weights at `weights/panns_pcen.pt` (and Docker Desktop installed):
+Two images, both fully offline at runtime (Docker Desktop or any Linux host):
 
 ```powershell
 cd echosentinel_v2
+# 1) Batch inference (PS-12 submission format):
 docker build -f docker/Dockerfile -t echosentinel .
 docker run --rm --network none -v C:\path\to\wavs:/data/in:ro -v C:\path\to\out:/data/out echosentinel
+
+# 2) Web console (UI + API, port 8710, analyses persist in a named volume):
+docker build -f docker/Dockerfile.console -t echosentinel-console .
+docker run --rm -p 8710:8710 -v echosentinel_data:/app/out/webapp echosentinel-console
 ```
 
-`--network none` proves the container is internet-independent (a PS-12 requirement);
-output lands at `out/results.json` in the competition JSON format.
+`--network none` proves the batch container is internet-independent (a PS-12
+requirement); output lands at `out/results.json` in the competition JSON format.
 
 ## Threshold calibration
 

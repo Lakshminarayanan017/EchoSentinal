@@ -9,7 +9,6 @@ model, fonts-fallbacks, and all assets are local.
 from __future__ import annotations
 
 import json
-import shutil
 from dataclasses import asdict
 from pathlib import Path
 
@@ -150,11 +149,14 @@ def create_app(
 
 
 def main() -> None:
+    import os
+
     import uvicorn
 
-    if shutil.which("uvicorn") is None:
-        pass  # uvicorn importable is what matters
-    uvicorn.run(create_app(), host="127.0.0.1", port=8710, log_level="info")
+    # Local default binds loopback only; containers set HOST=0.0.0.0.
+    host = os.environ.get("ECHOSENTINEL_HOST", "127.0.0.1")
+    port = int(os.environ.get("ECHOSENTINEL_PORT", "8710"))
+    uvicorn.run(create_app(), host=host, port=port, log_level="info")
 
 
 if __name__ == "__main__":
