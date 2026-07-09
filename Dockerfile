@@ -19,9 +19,8 @@ COPY predict.py ./
 
 RUN mkdir -p weights
 
-RUN gdown --fuzzy \
-"https://drive.google.com/file/d/19IU8-RbiKg4C-yBqHY_wGhA-UVn_Pm7B/view?usp=sharing" \
--O weights/panns_pcen.pt
+RUN gdown "https://drive.google.com/uc?id=19IU8-RbiKg4C-yBqHY_wGhA-UVn_Pm7B" \
+    -O weights/panns_pcen.pt
 
 RUN pip install --no-cache-dir .
 
