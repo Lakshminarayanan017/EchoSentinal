@@ -35,76 +35,8 @@ second-rounding) turns posteriors into competition-valid events, tuned against t
 metric (Identification Error Rate, where a missed event costs 4× a false alarm). Everything is
 validated locally on a synthetic set scored with pyannote-metrics IER.
 
-## Quickstart (Phase 0)
 
-```powershell
-cd echosentinel_v2
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-
-# 1. Audit the dataset -> manifests/relabel_review.csv (then review/edit final_class column)
-python scripts/00_audit_dataset.py
-
-# 2. Build the training manifest from the reviewed CSV
-python scripts/01_build_manifests.py
-
-# 3. Run tests
-pytest
-```
-
-Class-4 training data is user-supplied — see [docs/class4_sources.md](docs/class4_sources.md).
-
-**Model weights are not in git** (292 MB, and thresholds are calibrated per
-checkpoint). Obtain `weights/panns_pcen.pt` either by copying it from an
-existing installation or by training via `notebooks/train_colab.ipynb`, then
-run `python scripts/07_recalibrate.py` once.
-
-## Web console
-
-A full operational console (upload → live analysis queue → interactive results
-timeline with real waveform/spectrogram → mission archive), served locally:
-
-```powershell
-cd echosentinel_v2
-.venv\Scripts\Activate.ps1
-python -m echosentinel.server        # → http://127.0.0.1:8710
-```
-
-Everything in the UI is backed by the real pipeline: per-class sensitivity
-sliders scale the calibrated thresholds for the next upload, Export JSON
-downloads the PS-12 results file, and the audio player is synchronized with
-the detected-event timeline.
-
-## Docker (deployment)
-
-Two images, both fully offline at runtime (Docker Desktop or any Linux host):
-
-```powershell
-cd echosentinel_v2
-# 1) Batch inference (PS-12 submission format):
-docker build -f docker/Dockerfile -t echosentinel .
-docker run --rm --network none -v C:\path\to\wavs:/data/in:ro -v C:\path\to\out:/data/out echosentinel
-
-# 2) Web console (UI + API, port 8710, analyses persist in a named volume):
-docker build -f docker/Dockerfile.console -t echosentinel-console .
-docker run --rm -p 8710:8710 -v echosentinel_data:/app/out/webapp echosentinel-console
-```
-
-`--network none` proves the batch container is internet-independent (a PS-12
-requirement); output lands at `out/results.json` in the competition JSON format.
-
-## Threshold calibration
-
-Post-processing thresholds are model-specific. After every (re)training:
-
-```powershell
-python scripts/03_build_synth_valset.py --n-scenes 24 --seconds 60
-python scripts/06_tune_thresholds.py --weights weights/panns_pcen.pt --write
-```
-
-This searches per-class hysteresis thresholds and the median filter against the
-exact IER metric and writes the winners into `configs/inference.yaml`.
+.
 
 ## Repo layout
 
